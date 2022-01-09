@@ -53,8 +53,10 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'
 	
-    implementation("com.querydsl:querydsl-jpa")
-    implementation("com.querydsl:querydsl-apt") 
+    compileOnly("com.querydsl:querydsl-jpa")
+    compileOnly("com.querydsl:querydsl-apt") 
+	
+	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client' // MariaDB
 	
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
