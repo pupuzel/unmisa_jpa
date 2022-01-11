@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.jock.unmisa.entity.AuthService;
+import com.jock.unmisa.service.AuthService;
 import com.jock.unmisa.utils.ResultMap;
 import com.jock.unmisa.vo.AuthVO;
 

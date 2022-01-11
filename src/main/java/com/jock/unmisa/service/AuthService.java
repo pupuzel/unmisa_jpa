@@ -1,13 +1,11 @@
-package com.jock.unmisa.entity;
+package com.jock.unmisa.service;
 
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.BodyPublishers;
-import java.net.http.HttpResponse.BodyHandler;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.time.Duration;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -17,6 +15,8 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jock.unmisa.config.AuthProviderConfig;
 import com.jock.unmisa.config.AuthProviderConfig.Provider;
+import com.jock.unmisa.dao.UserQueryRepository;
+import com.jock.unmisa.entity.user.User;
 import com.jock.unmisa.utils.ResultMap;
 import com.jock.unmisa.vo.AuthVO;
 
@@ -27,8 +27,9 @@ import lombok.AllArgsConstructor;
 public class AuthService {
 	
 	private HttpClient httpClient;
-	
 	private ObjectMapper mapper;
+	
+	private UserQueryRepository userDAO;
 
 	/**
 	 * 사용자 로그인
@@ -43,6 +44,9 @@ public class AuthService {
 		// auth 사용자 정보 조회
 		AuthVO authUser = getAuth(provider);
 		
+		// DB 사용자 정보 조회
+		User user = userDAO.selectUser(authUser.getUser_id());
+		System.out.println(user.getUser_email());
 		
 		return new ResultMap("Y");
 	}
@@ -72,12 +76,14 @@ public class AuthService {
 		
 		// auth type 별로 포맷이 다르니 알맞게 VO에 넣어주기 ㄱㄱ
 		AuthVO authUser = new AuthVO();
+		authUser.setAuth_type(provider.getAuth_type());
+		
 		if(provider.getAuth_type().equals("kakao")) {
 			
 			var kakao_account = userInfo.getJSONObject("kakao_account");
 			var profile = kakao_account.getJSONObject("profile");
 			
-			authUser.setId(userInfo.getString("id"));
+			authUser.setClient_id(userInfo.getString("id"));
 			authUser.setNickname(profile.getString("nickname"));
 			authUser.setAge(kakao_account.getString("age_range"));
 			authUser.setGender(kakao_account.getString("gender"));
@@ -86,7 +92,7 @@ public class AuthService {
 		}else if(provider.getAuth_type().equals("naver")) {
 			
 			var response = userInfo.getJSONObject("response");
-			authUser.setId(response.getString("id"));
+			authUser.setClient_id(response.getString("id"));
 			//authUser.setNickname(response.getString("nickname"));
 			//authUser.setAge(response.getString("age"));
 			//authUser.setGender(response.getString("gender"));
@@ -94,7 +100,7 @@ public class AuthService {
 			
 		}else if(provider.getAuth_type().equals("google")) {
 			
-			authUser.setId(userInfo.getString("id"));
+			authUser.setClient_id(userInfo.getString("id"));
 			authUser.setNickname(userInfo.getString("name"));
 			authUser.setEmail(userInfo.getString("email"));
 		}
