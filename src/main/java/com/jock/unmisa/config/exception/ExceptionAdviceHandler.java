@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -14,7 +15,7 @@ import com.jock.unmisa.utils.ResultMap;
 
 import lombok.extern.slf4j.Slf4j;
 
-@RestControllerAdvice("com.jockjock.token.controller")
+@RestControllerAdvice("com.jock.unmisa.controller")
 @Slf4j
 public class ExceptionAdviceHandler {
 
@@ -30,7 +31,7 @@ public class ExceptionAdviceHandler {
 	
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<ResultMap> exception(Exception e) {
-		log.info("ExceptionAdviceHandler -------> ", e);
+		log.info("ExceptionAdviceHandler ------->", e);
 		ResultMap result = new ResultMap("N", "서버 오류");
 		
 		return new ResponseEntity<ResultMap>(result, HttpStatus.OK);

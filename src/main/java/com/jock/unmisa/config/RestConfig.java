@@ -1,5 +1,13 @@
 package com.jock.unmisa.config;
 
+import java.net.http.HttpClient;
+import java.net.http.HttpClient.Redirect;
+import java.time.Duration;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -25,5 +33,14 @@ public class RestConfig {
         converter.setPrettyPrint(true);
 
         return converter;
+    }
+    
+    @Bean
+    public HttpClient httpClient() {
+        ExecutorService executorService = new ThreadPoolExecutor(0, 20, 60L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
+        return HttpClient.newBuilder()
+                .executor(executorService)
+                .connectTimeout(Duration.ofSeconds(5))
+                .build();
     }
 }
