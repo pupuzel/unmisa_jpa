@@ -23,17 +23,18 @@ public class AuthVO {
 	private String code;
 	
 	private String access_token;
-	private String nickname;
-	private String email;
-	private String profile_image;
-	private String age;
-	private String gender;
+	
 	private String error;
 	
-	public String getUser_id() {
-		OauthType type = OauthType.valueOf(auth_type);
-		String oauth_num = String.format("%04d", type.ordinal());
-		
-		return oauth_num+"-"+client_id;
-	}
+	private String user_nm;
+	private String user_email;
+	private String user_profile_img;
+	private String user_age_range;
+	private String user_birth;
+	private String user_sns;
+	private String user_site;
+	private String user_gender;
+	private String user_simple_intro;
+	private String user_area;
+	private boolean email_yn = true;
 }

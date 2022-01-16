@@ -29,9 +29,9 @@ public class AuthController {
 	public ResponseEntity<ResultMap> login(@RequestBody @Valid AuthVO authVo, 
 			HttpServletRequest request, HttpServletResponse response) throws Exception{
 		
-		authService.login(authVo, response);
+		var resultMap = authService.login(authVo, request, response);
 		
-		return new ResponseEntity<ResultMap>(HttpStatus.OK);
+		return new ResponseEntity<ResultMap>(resultMap, HttpStatus.OK);
 	}
 	
 }

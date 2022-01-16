@@ -7,6 +7,7 @@ import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.time.Duration;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.boot.configurationprocessor.json.JSONObject;
@@ -16,6 +17,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jock.unmisa.config.AuthProviderConfig;
 import com.jock.unmisa.config.AuthProviderConfig.Provider;
 import com.jock.unmisa.dao.UserQueryRepository;
+import com.jock.unmisa.entity.domain.OauthType;
 import com.jock.unmisa.entity.user.User;
 import com.jock.unmisa.utils.ResultMap;
 import com.jock.unmisa.vo.AuthVO;
@@ -35,7 +37,8 @@ public class AuthService {
 	 * 사용자 로그인
 	 * @return ResultMap
 	 */
-	public ResultMap login(AuthVO authVo, HttpServletResponse response) throws Exception{
+	public ResultMap login(AuthVO authVo, HttpServletRequest request, HttpServletResponse response) throws Exception{
+		var resultMap = new ResultMap("Y");
 		
 		// auth 타입별 provider 가져오기
 		AuthProviderConfig authConfig = new AuthProviderConfig(authVo.getCode(), authVo.getAuth_type());
@@ -46,9 +49,19 @@ public class AuthService {
 		
 		// DB 사용자 정보 조회
 		User user = userDAO.selectUser(authUser.getUser_id());
-		System.out.println(user.getUser_email());
 		
-		return new ResultMap("Y");
+		// 회원가입 page redirect
+		if(user == null) {
+			authUser.setUser_id(null);
+			resultMap.put("data", authUser);
+			
+		// 세션 생성	
+		}else {
+			
+			resultMap.put("data", user);
+		}
+		
+		return resultMap;
 	}
 	
 	
@@ -60,6 +73,21 @@ public class AuthService {
 	
 	
 	/* @@@@@@@@@@@@@@@@@@ private service module @@@@@@@@@@@@@@@@@@ */
+	
+	/**
+	 * 회원가입
+	 * @return User
+	 */
+	private User setJoin(AuthVO authVo, HttpServletRequest request) throws Exception{
+		User user = new User();
+		user.setId(authVo.getUser_id());
+		user.setOauth_client_id(authVo.getClient_id());
+		user.setOauth_type(OauthType.valueOf(authVo.getAuth_type()));
+		user.setUser_email(authVo.getUser_email());
+		user.setEmail_yn(true);
+		
+		return null;
+	}
 	
 	/**
 	 * auth 사용자 정보 조회
@@ -84,10 +112,10 @@ public class AuthService {
 			var profile = kakao_account.getJSONObject("profile");
 			
 			authUser.setClient_id(userInfo.getString("id"));
-			authUser.setNickname(profile.getString("nickname"));
-			authUser.setAge(kakao_account.getString("age_range"));
-			authUser.setGender(kakao_account.getString("gender"));
-			authUser.setEmail(kakao_account.getString("email"));
+			authUser.setUser_nm(profile.getString("nickname"));
+			authUser.setUser_age_range(kakao_account.getString("age_range"));
+			authUser.setUser_gender(kakao_account.getString("gender"));
+			authUser.setUser_email(kakao_account.getString("email"));
 			
 		}else if(provider.getAuth_type().equals("naver")) {
 			
@@ -101,9 +129,14 @@ public class AuthService {
 		}else if(provider.getAuth_type().equals("google")) {
 			
 			authUser.setClient_id(userInfo.getString("id"));
-			authUser.setNickname(userInfo.getString("name"));
-			authUser.setEmail(userInfo.getString("email"));
+			authUser.setUser_nm(userInfo.getString("name"));
+			authUser.setUser_email(userInfo.getString("email"));
 		}
+		
+		// user_id format
+		OauthType type = OauthType.valueOf(provider.getAuth_type());
+		String oauth_num = String.format("%04d", type.ordinal());
+		authUser.setUser_id(oauth_num+"-"+authUser.getClient_id());
 		
 		return authUser;
 	}
