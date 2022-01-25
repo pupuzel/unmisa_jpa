@@ -30,13 +30,15 @@ public class QUser extends EntityPathBase<User> {
 
     public final EnumPath<com.jock.unmisa.entity.domain.OauthType> oauth_type = createEnum("oauth_type", com.jock.unmisa.entity.domain.OauthType.class);
 
-    public final NumberPath<Integer> seq = createNumber("seq", Integer.class);
+    public final StringPath user_age_range = createString("user_age_range");
+
+    public final StringPath user_area = createString("user_area");
 
     public final StringPath user_birth = createString("user_birth");
 
     public final StringPath user_email = createString("user_email");
 
-    public final BooleanPath user_gender = createBoolean("user_gender");
+    public final EnumPath<com.jock.unmisa.entity.domain.UserGender> user_gender = createEnum("user_gender", com.jock.unmisa.entity.domain.UserGender.class);
 
     public final StringPath user_intro = createString("user_intro");
 

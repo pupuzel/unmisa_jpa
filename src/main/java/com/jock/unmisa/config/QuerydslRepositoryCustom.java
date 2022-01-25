@@ -7,12 +7,11 @@ import javax.persistence.EntityManager;
 
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
+import com.jock.unmisa.utils.StringUtil;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 public class QuerydslRepositoryCustom extends QuerydslRepositorySupport{
-
-	private static final String user = null;
 
 	private final Object entity;
 	
@@ -29,7 +28,15 @@ public class QuerydslRepositoryCustom extends QuerydslRepositorySupport{
 		 try {
 			 	if(value == null) return null;
 			 	
-		    	Field field = entity.getClass().getDeclaredField(name);
+			 	if(value.getClass().getTypeName().equals("java.lang.String")) {
+			 		
+			 		if(StringUtil.isEmpty(String.valueOf(value))) {
+			 			return null;
+			 		}
+			 		
+			 	}
+			 	
+		    	Field field = entity.getClass().getDeclaredField(StringUtil.trim(name));
 		    	
 		    	Object fieldValue = field.get(entity);
 		    	Method method = fieldValue.getClass().getMethod("eq", Object.class);
@@ -40,6 +47,10 @@ public class QuerydslRepositoryCustom extends QuerydslRepositorySupport{
 		}
 
     }
+	 
+	 public void insert(Object o) {
+		getEntityManager().persist(o);
+	 }
 	 
 
 }

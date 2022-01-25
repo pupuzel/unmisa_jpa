@@ -35,22 +35,11 @@ public class UserQueryRepository extends QuerydslRepositoryCustom{
 	public User selectUser(String user_id, String user_nm) {
 		return queryFactory
 					.selectFrom(user)
-					.where( eq(user_id,"user_id")
+					.where( eq(user_id, "id")
 							  ,eq(user_nm, "user_nm")
 							)
 					.fetchOne();
 	 }
 		
-	 /**
-	 * 사용자 생성
-	 * @return void
-	 */
-	public void insertUser(User o) {
-		getEntityManager().persist(o);
-	 }
-	 
-	 public void insertUserMeta(UserMeta o) {
-		 //em.persist(o);
-	 }
-	 
+
 }

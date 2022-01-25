@@ -2,6 +2,7 @@ package com.jock.unmisa.entity.user;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
@@ -41,8 +42,7 @@ public class UserMeta {
 	private String last_diary_ymd;
 	
 	@OneToOne
-	@MapsId
-	@JoinColumn(name = "user_id")
-	private User user;
-	
+    @MapsId
+    @JoinColumn(name = "USER_ID")
+    private User user;
 }

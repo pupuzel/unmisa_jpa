@@ -52,4 +52,16 @@ public class AuthController {
 		return new ResponseEntity<ResultMap>(resultMap, HttpStatus.OK);
 	}
 	
+	/**
+	 * 사용자 닉네임 중복 체크
+	 * @return ResponseEntity<ResultMap>
+	 */
+	@PostMapping("/authenticate/checkName")
+	public ResponseEntity<ResultMap> checkName(@RequestBody AuthVO authVo, HttpServletRequest request) throws Exception{
+		
+		var resultMap = authService.checkName(authVo);
+		
+		return new ResponseEntity<ResultMap>(resultMap, HttpStatus.OK);
+	}
+	
 }

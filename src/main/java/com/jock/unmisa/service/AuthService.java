@@ -41,7 +41,7 @@ public class AuthService {
 	 * @return ResultMap
 	 */
 	public ResultMap login(AuthVO authVo, HttpServletRequest request, HttpServletResponse response) throws Exception{
-		var resultMap = new ResultMap("Y");
+		var resultMap = new ResultMap();
 		
 		// auth 타입별 provider 가져오기
 		AuthProviderConfig authConfig = new AuthProviderConfig(authVo.getCode(), authVo.getAuth_type());
@@ -73,12 +73,27 @@ public class AuthService {
 	 * @return ResultMap
 	 */
 	public ResultMap Join(AuthVO authVo, HttpServletRequest request, HttpServletResponse response) throws Exception{
-		var resultMap = new ResultMap("Y");
+		var resultMap = new ResultMap();
 		
 		// User 생성
 		User user = createUser(authVo);
 
 		resultMap.put("data", user);
+		return resultMap;
+	}
+	
+	/**
+	 * 사용자 닉네임 중복 체크
+	 * @return ResultMap
+	 */
+	public ResultMap checkName(AuthVO authVo) throws Exception{
+		var resultMap = new ResultMap();
+		
+		User user = userDAO.selectUser(null, authVo.getUser_nm());
+		if(user != null) {
+			resultMap.put("result", "N");
+		}
+		
 		return resultMap;
 	}
 	
@@ -129,7 +144,7 @@ public class AuthService {
 		}
 
 		// insert user
-		userDAO.insertUser(user);
+		userDAO.insert(user);
 		
 		return user;
 	}

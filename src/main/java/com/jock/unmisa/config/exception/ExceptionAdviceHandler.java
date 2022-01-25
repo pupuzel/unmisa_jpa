@@ -32,9 +32,7 @@ public class ExceptionAdviceHandler {
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<ResultMap> exception(Exception e) {
 		log.info("ExceptionAdviceHandler ------->", e);
-		ResultMap result = new ResultMap("N");
-		result.put("error", "server error");
 		
-		return new ResponseEntity<ResultMap>(result, HttpStatus.OK);
+		return new ResponseEntity<ResultMap>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 }
