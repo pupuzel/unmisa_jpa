@@ -1,17 +1,22 @@
 package com.jock.unmisa;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.jock.unmisa.dao.UserQueryRepository;
 import com.jock.unmisa.entity.domain.OauthType;
 import com.jock.unmisa.entity.user.User;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 
 /*	
 	em.find();    // 엔티티 조회
@@ -23,31 +28,39 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 	em.clear();   // 영속성 컨텍스트 초기화
 	em.close();   // 영속성 컨텍스트 종료
 */
-@DataJpaTest
+@RunWith(SpringRunner.class)
+@SpringBootTest(webEnvironment = WebEnvironment.NONE)
+@ActiveProfiles("dev")
 @AutoConfigureTestDatabase(replace = Replace.NONE)
 class UnmisaApplicationTests {
 
-    @PersistenceContext
-    private EntityManager em;
+    @Autowired
+    private UserQueryRepository userDAO;
     
-    private JPAQueryFactory queryFactory;
+//    @Transactional
+//    @Rollback(false)
+//    @Test
+//	public void setData() {
+//		
+//		User user = new User();
+//		user.setId(UUID.randomUUID().toString());
+//		user.setUser_nm("크린이_클라스2");
+//		user.setUser_email("jjdo1994");
+//		user.setEmail_yn(false);
+//		user.setOauth_client_id("1234");
+//		user.setOauth_type(OauthType.kakao);
+//		
+//		userDAO.insertUser(user);
+//		
+//	}
+//    
     
-    @Rollback(false)
-	@Test
-	void test() {
-		queryFactory = new JPAQueryFactory(em);
-		
-		User user = new User();
-		user.setId("test12345");
-		user.setUser_email("jjdo1994");
-		user.setEmail_yn(false);
-		user.setOauth_client_id("1234");
-		user.setOauth_type(OauthType.kakao);
-		
-		em.persist(user);
-		
-		user.setUser_simple_intro("크린이 클라스");
-		
-	}
+    @Test
+    void test() throws Exception {
+    	User user = userDAO.selectUser(null, "크린이_클라스");
+    	System.out.println("id : "+user.getId());
+    	System.out.println("email : "+user.getUser_email());
+    	System.out.println("name : "+user.getUser_nm());
+    }
 	
 }

@@ -12,14 +12,17 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jock.unmisa.config.AuthProviderConfig;
 import com.jock.unmisa.config.AuthProviderConfig.Provider;
 import com.jock.unmisa.dao.UserQueryRepository;
 import com.jock.unmisa.entity.domain.OauthType;
+import com.jock.unmisa.entity.domain.UserGender;
 import com.jock.unmisa.entity.user.User;
 import com.jock.unmisa.utils.ResultMap;
+import com.jock.unmisa.utils.StringUtil;
 import com.jock.unmisa.vo.AuthVO;
 
 import lombok.AllArgsConstructor;
@@ -48,7 +51,7 @@ public class AuthService {
 		AuthVO authUser = getAuth(provider);
 		
 		// DB 사용자 정보 조회
-		User user = userDAO.selectUser(authUser.getUser_id());
+		User user = userDAO.selectUser(authUser.getUser_id(), null);
 		
 		// 회원가입 page redirect
 		if(user == null) {
@@ -65,28 +68,70 @@ public class AuthService {
 	}
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	/* @@@@@@@@@@@@@@@@@@ private service module @@@@@@@@@@@@@@@@@@ */
-	
 	/**
-	 * 회원가입
+	 * 회원가입 후 로그인 처리
+	 * @return ResultMap
+	 */
+	public ResultMap Join(AuthVO authVo, HttpServletRequest request, HttpServletResponse response) throws Exception{
+		var resultMap = new ResultMap("Y");
+		
+		// User 생성
+		User user = createUser(authVo);
+
+		resultMap.put("data", user);
+		return resultMap;
+	}
+	
+	
+	
+	
+	
+	
+	
+	/* @@@@@@@@@@@@@@@@@@ private @@@@@@@@@@@@@@@@@@ */
+	/** 
+	 * 사용자 create
 	 * @return User
 	 */
-	private User setJoin(AuthVO authVo, HttpServletRequest request) throws Exception{
-		User user = new User();
-		user.setId(authVo.getUser_id());
-		user.setOauth_client_id(authVo.getClient_id());
-		user.setOauth_type(OauthType.valueOf(authVo.getAuth_type()));
-		user.setUser_email(authVo.getUser_email());
-		user.setEmail_yn(true);
+	private User createUser(AuthVO authVo) throws Exception{
 		
-		return null;
+		User user = new User();
+		user.setOauth_client_id(authVo.getClient_id());
+		user.setUser_nm(authVo.getUser_nm());
+		user.setUser_email(authVo.getUser_email());
+		user.setEmail_yn(authVo.isEmail_yn());
+		user.setUser_simple_intro(authVo.getUser_simple_intro());
+		user.setUser_area(authVo.getUser_area());
+		user.setUser_sns(authVo.getUser_sns());
+		user.setUser_site(authVo.getUser_site());
+		
+		// oauth format
+		OauthType oauthType = OauthType.valueOf(authVo.getAuth_type());
+		String oauth_num = String.format("%04d", oauthType.ordinal());
+		user.setOauth_type(oauthType);
+		
+		// userId format
+		user.setId(oauth_num+"-"+authVo.getClient_id());
+		
+		// gender format
+		if(!StringUtil.isEmpty(authVo.getUser_gender())) {
+			String gender = authVo.getUser_gender().toLowerCase();
+			if(gender.equals("m") || gender.equals("male")) {
+				user.setUser_gender(UserGender.M);
+			}else {
+				user.setUser_gender(UserGender.F);
+			}
+		}
+		
+		// age format
+		if(!StringUtil.isEmpty(authVo.getUser_age_range())) {
+			user.setUser_age_range(authVo.getUser_age_range());
+		}
+
+		// insert user
+		userDAO.insertUser(user);
+		
+		return user;
 	}
 	
 	/**

@@ -2,6 +2,7 @@ package com.jock.unmisa.vo;
 
 import javax.validation.constraints.NotEmpty;
 
+import com.jock.unmisa.config.validate.AuthValidationGroup;
 import com.jock.unmisa.entity.domain.OauthType;
 
 import lombok.Getter;
@@ -16,10 +17,10 @@ public class AuthVO {
 	
 	private String client_id;
 	
-	@NotEmpty
+	@NotEmpty(groups = AuthValidationGroup.loginGroup.class)
 	private String auth_type;
 	
-	@NotEmpty
+	@NotEmpty(groups = AuthValidationGroup.loginGroup.class)
 	private String code;
 	
 	private String access_token;
@@ -29,6 +30,7 @@ public class AuthVO {
 	private String user_nm;
 	private String user_email;
 	private String user_profile_img;
+	private String user_profile_img_type;
 	private String user_age_range;
 	private String user_birth;
 	private String user_sns;
