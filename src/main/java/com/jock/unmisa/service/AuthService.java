@@ -10,9 +10,9 @@ import java.time.Duration;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jock.unmisa.config.AuthProviderConfig;
@@ -20,21 +20,29 @@ import com.jock.unmisa.config.AuthProviderConfig.Provider;
 import com.jock.unmisa.dao.UserQueryRepository;
 import com.jock.unmisa.entity.domain.OauthType;
 import com.jock.unmisa.entity.domain.UserGender;
+import com.jock.unmisa.entity.domain.UserState;
 import com.jock.unmisa.entity.user.User;
+import com.jock.unmisa.entity.user.UserMeta;
+import com.jock.unmisa.utils.ClientUtils;
+import com.jock.unmisa.utils.DateUtils;
+import com.jock.unmisa.utils.FileUtils;
 import com.jock.unmisa.utils.ResultMap;
 import com.jock.unmisa.utils.StringUtil;
 import com.jock.unmisa.vo.AuthVO;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Service
 public class AuthService {
 	
-	private HttpClient httpClient;
-	private ObjectMapper mapper;
+	private final HttpClient httpClient;
+	private final ObjectMapper mapper;
 	
-	private UserQueryRepository userDAO;
+	private final UserQueryRepository userDAO;
+	
+	@Value("${profile.img.path}")
+	private String profileImgPath;
 
 	/**
 	 * 사용자 로그인
@@ -56,12 +64,14 @@ public class AuthService {
 		// 회원가입 page redirect
 		if(user == null) {
 			authUser.setUser_id(null);
+			
 			resultMap.put("data", authUser);
 			
 		// 세션 생성	
 		}else {
+			User info = setSession(user, response);
 			
-			resultMap.put("data", user);
+			resultMap.put("data", info);
 		}
 		
 		return resultMap;
@@ -75,10 +85,16 @@ public class AuthService {
 	public ResultMap Join(AuthVO authVo, HttpServletRequest request, HttpServletResponse response) throws Exception{
 		var resultMap = new ResultMap();
 		
-		// User 생성
-		User user = createUser(authVo);
-
-		resultMap.put("data", user);
+		// User insert
+		User user = insertUser(authVo);
+		
+		// User Meta insert
+		insertUserMeta(user, request);
+		
+		// set session
+		User info = setSession(user, response);
+		
+		resultMap.put("data", info);
 		return resultMap;
 	}
 	
@@ -104,11 +120,17 @@ public class AuthService {
 	
 	
 	/* @@@@@@@@@@@@@@@@@@ private @@@@@@@@@@@@@@@@@@ */
+	
+	private User setSession(User user, HttpServletResponse response) throws Exception{
+		
+		return null;
+	}
+	
 	/** 
 	 * 사용자 create
 	 * @return User
 	 */
-	private User createUser(AuthVO authVo) throws Exception{
+	private User insertUser(AuthVO authVo) throws Exception{
 		
 		User user = new User();
 		user.setOauth_client_id(authVo.getClient_id());
@@ -120,15 +142,15 @@ public class AuthService {
 		user.setUser_sns(authVo.getUser_sns());
 		user.setUser_site(authVo.getUser_site());
 		
-		// oauth format
+		// oauth set
 		OauthType oauthType = OauthType.valueOf(authVo.getAuth_type());
 		String oauth_num = String.format("%04d", oauthType.ordinal());
 		user.setOauth_type(oauthType);
 		
-		// userId format
+		// userId set
 		user.setId(oauth_num+"-"+authVo.getClient_id());
 		
-		// gender format
+		// gender set
 		if(!StringUtil.isEmpty(authVo.getUser_gender())) {
 			String gender = authVo.getUser_gender().toLowerCase();
 			if(gender.equals("m") || gender.equals("male")) {
@@ -138,15 +160,39 @@ public class AuthService {
 			}
 		}
 		
-		// age format
+		// age set
 		if(!StringUtil.isEmpty(authVo.getUser_age_range())) {
 			user.setUser_age_range(authVo.getUser_age_range());
 		}
-
+		
+		// profile image set
+		if(!StringUtil.isEmpty(authVo.getUser_profile_img())) {
+			authVo.setUser_id(oauth_num+"-"+authVo.getClient_id());
+			
+			String imgPath = FileUtils.uploadProfileImg(authVo, profileImgPath);
+			user.setUser_profile_img(imgPath);
+		}
+		
 		// insert user
 		userDAO.insert(user);
 		
 		return user;
+	}
+	
+	
+	private void insertUserMeta(User user, HttpServletRequest request) throws Exception{
+		String request_ip = ClientUtils.getRemoteIP(request);
+		
+		UserMeta meta = new UserMeta();
+		meta.setUser(user);
+		meta.setId(user.getId());
+		meta.setRegister_ip(request_ip);
+		meta.setLast_login_ip(request_ip);
+		meta.setRegister_date(DateUtils.now());
+		meta.setLast_login_date(DateUtils.now());
+		meta.setUser_state(UserState.Ordinary);
+		
+		userDAO.insert(meta);
 	}
 	
 	/**

@@ -9,9 +9,11 @@ import javax.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
 
 import com.jock.unmisa.config.QuerydslRepositoryCustom;
+import com.jock.unmisa.entity.user.QUser;
 import com.jock.unmisa.entity.user.User;
 import com.jock.unmisa.entity.user.UserMeta;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
@@ -34,7 +36,14 @@ public class UserQueryRepository extends QuerydslRepositoryCustom{
 	 */
 	public User selectUser(String user_id, String user_nm) {
 		return queryFactory
-					.selectFrom(user)
+					.select(Projections.bean(
+							User.class
+							,user.id
+							,user.oauth_type
+							,user.user_nm
+							,user.user_profile_img
+					))
+					.from(user)
 					.where( eq(user_id, "id")
 							  ,eq(user_nm, "user_nm")
 							)
