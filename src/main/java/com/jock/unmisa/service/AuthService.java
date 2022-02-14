@@ -6,12 +6,17 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.time.Duration;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
+import javax.annotation.Resource;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,6 +31,7 @@ import com.jock.unmisa.entity.user.UserMeta;
 import com.jock.unmisa.utils.ClientUtils;
 import com.jock.unmisa.utils.DateUtils;
 import com.jock.unmisa.utils.FileUtils;
+import com.jock.unmisa.utils.JwtTokenUtil;
 import com.jock.unmisa.utils.ResultMap;
 import com.jock.unmisa.utils.StringUtil;
 import com.jock.unmisa.vo.AuthVO;
@@ -38,11 +44,21 @@ public class AuthService {
 	
 	private final HttpClient httpClient;
 	private final ObjectMapper mapper;
+	private final JwtTokenUtil jwtTokenUtil;
 	
 	private final UserQueryRepository userDAO;
 	
+	@Resource(name = "redisTemplate") 
+	private ValueOperations<String, String> valueOperations;
+	
 	@Value("${profile.img.path}")
 	private String profileImgPath;
+	
+	@Value("${spring.session.redis.namespace}")
+	private String sessionKey;
+	
+	@Value("${spring.session.timeout}")
+    private int session_timeout;
 
 	/**
 	 * 사용자 로그인
@@ -64,12 +80,13 @@ public class AuthService {
 		// 회원가입 page redirect
 		if(user == null) {
 			authUser.setUser_id(null);
+			authUser.setAuto_login_yn(authVo.isAuto_login_yn());
 			
 			resultMap.put("data", authUser);
 			
 		// 세션 생성	
 		}else {
-			User info = setSession(user, response);
+			User info = setSession(user, response, authVo.isAuto_login_yn());
 			
 			resultMap.put("data", info);
 		}
@@ -92,7 +109,7 @@ public class AuthService {
 		insertUserMeta(user, request);
 		
 		// set session
-		User info = setSession(user, response);
+		User info = setSession(user, response, authVo.isAuto_login_yn());
 		
 		resultMap.put("data", info);
 		return resultMap;
@@ -113,6 +130,33 @@ public class AuthService {
 		return resultMap;
 	}
 	
+	/**
+	 * 사용자 로그아웃
+	 * @return void
+	 */
+	public void logout(HttpServletRequest request, HttpServletResponse response) throws Exception{
+		 String uuid = "";
+		
+		 // uuid 쿠키 찾기
+		 if(request.getCookies() != null ){
+			for(Cookie cookie : request.getCookies()){
+				if(cookie.getName().equals("u_uuid")){
+					uuid = cookie.getValue();
+					break;
+				}
+			}
+		 }
+		 
+		 if(!StringUtil.isEmpty(uuid)) {
+			 // redis 초기화
+			 valueOperations.set(uuid, "", Duration.ofSeconds(1));
+			 
+			 //쿠키 초기화
+			 ClientUtils.setSessionCookie(response, "u_uuid", "", 0);
+			 ClientUtils.setSessionCookie(response, "authorization", "", 0);
+		 }
+		 
+	}
 	
 	
 	
@@ -121,9 +165,40 @@ public class AuthService {
 	
 	/* @@@@@@@@@@@@@@@@@@ private @@@@@@@@@@@@@@@@@@ */
 	
-	private User setSession(User user, HttpServletResponse response) throws Exception{
+	
+	/**
+	 * 세션 만들기
+	 * @return User
+	 */
+	private User setSession(User user, HttpServletResponse response, boolean auto_login_yn) throws Exception{
+		User u = new User();
+		u.setId(user.getId());
+		u.setOauth_type(user.getOauth_type());
+		u.setUser_nm(user.getUser_nm());
+		u.setUser_profile_img(user.getUser_profile_img());
 		
-		return null;
+		//jwt token 생성
+		String token = jwtTokenUtil.<User>generateToken(u);
+		
+		//redis session 생성
+		String uuid = UUID.randomUUID().toString();
+		
+		// 자동 로그인일 경우 30일 유지
+		if(auto_login_yn) {
+			// redis
+			valueOperations.set(uuid, token, Duration.ofSeconds(session_timeout * 30));
+			
+			//cookie
+			ClientUtils.setSessionCookie(response, "u_uuid", uuid, session_timeout * 30);
+			ClientUtils.setSessionCookie(response, "authorization", token);
+		}else {
+			valueOperations.set(uuid, token, Duration.ofSeconds(session_timeout));
+			ClientUtils.setSessionCookie(response, "u_uuid", uuid);
+			ClientUtils.setSessionCookie(response, "authorization", token);
+		}
+		
+		
+		return u;
 	}
 	
 	/** 
@@ -180,6 +255,10 @@ public class AuthService {
 	}
 	
 	
+	/**
+	 * 사용자 Meta 정보 create
+	 * @return void
+	 */
 	private void insertUserMeta(User user, HttpServletRequest request) throws Exception{
 		String request_ip = ClientUtils.getRemoteIP(request);
 		

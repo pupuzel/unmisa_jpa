@@ -1,6 +1,8 @@
 package com.jock.unmisa.utils;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public class ClientUtils {
 
@@ -43,5 +45,22 @@ public class ClientUtils {
 		return ip;
 	}
 	
+	
+	public static void setSessionCookie(HttpServletResponse response, String key, String value) {
+		Cookie cookie = new Cookie(key, value);
+		cookie.setPath("/");
+		cookie.setHttpOnly(true);
+		//cookie.setSecure(true);
+		response.addCookie(cookie);
+	}
+	
+	public static void setSessionCookie(HttpServletResponse response, String key, String value, int maxAge) {
+		Cookie cookie = new Cookie(key, value);
+		cookie.setPath("/");
+		cookie.setHttpOnly(true);
+		//cookie.setSecure(true);
+		cookie.setMaxAge(maxAge);
+		response.addCookie(cookie);
+	}
 	
 }

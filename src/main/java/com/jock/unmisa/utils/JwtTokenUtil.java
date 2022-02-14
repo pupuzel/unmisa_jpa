@@ -3,24 +3,27 @@ package com.jock.unmisa.utils;
 import java.util.Date;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jock.unmisa.entity.user.User;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 @Component
 public class JwtTokenUtil {
-
-    private static final ObjectMapper MAPPER = new ObjectMapper();
+	
+	@Autowired
+    private ObjectMapper MAPPER;
 
     @Value("${spring.jwt.secret}")
     private String secret;
     
-    // @Value("${spring.session.timeout}")
-    private long session_timeout = 60;
+    @Value("${spring.token.timeout}")
+    private long token_timeout;
     
     //jwt token 모든 정보 조회
     public Map<String,Object> getBobyFromToken(String token){
@@ -51,23 +54,21 @@ public class JwtTokenUtil {
     
     // 유저를 위한 토큰을 발급해준다.
     public <T> String generateToken(T userDetails) {
-//    	Map<String,Object> claim;
-//    	
-//    	if(userDetails instanceof AuthUserDetail) {
-//    		((AuthUserDetail) userDetails).setAccess_token(null);
-//    		claim = MAPPER.convertValue(userDetails, Map.class);
-//    	}else {
-//    		claim = (Map<String, Object>) userDetails;
-//    	}
-//        
-//        claim.put("iat", new Date(System.currentTimeMillis()));
-//        claim.put("exp", new Date(System.currentTimeMillis() + (1000 * session_timeout) ));
-//        
-//        return Jwts.builder()
-//        			.setClaims(claim)
-//        			.signWith(SignatureAlgorithm.HS512, secret)
-//        			.compact();
-    	return null;
+    	Map<String,Object> claim;
+    	
+    	if(userDetails instanceof User) {
+    		claim = MAPPER.convertValue(userDetails, Map.class);
+    	}else {
+    		claim = (Map<String, Object>) userDetails;
+    	}
+        
+        claim.put("iat", new Date(System.currentTimeMillis()));
+        claim.put("exp", new Date(System.currentTimeMillis() + (1000 * token_timeout) ));
+        
+        return Jwts.builder()
+        			.setClaims(claim)
+        			.signWith(SignatureAlgorithm.HS512, secret)
+        			.compact();
     }
     
 

@@ -13,9 +13,9 @@ import net.bytebuddy.implementation.bind.annotation.Empty;
 @Setter
 public class AuthVO {
 	
-	private String user_id;
-	
 	private String client_id;
+	
+	private boolean auto_login_yn;
 	
 	@NotEmpty(groups = AuthValidationGroup.loginGroup.class)
 	private String auth_type;
@@ -27,6 +27,7 @@ public class AuthVO {
 	
 	private String error;
 	
+	private String user_id;
 	private String user_nm;
 	private String user_email;
 	private String user_profile_img;

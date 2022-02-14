@@ -30,7 +30,7 @@ public class AuthController {
 	 * 사용자 로그인 처리
 	 * @return ResponseEntity<ResultMap>
 	 */
-	@PostMapping("/authenticate/login")
+	@PostMapping("/api/authenticate/login")
 	public ResponseEntity<ResultMap> login(@RequestBody @Validated(AuthValidationGroup.loginGroup.class) AuthVO authVo, 
 			HttpServletRequest request, HttpServletResponse response) throws Exception{
 		
@@ -40,10 +40,22 @@ public class AuthController {
 	}
 	
 	/**
+	 * 사용자 로그아웃
+	 * @return ResponseEntity<ResultMap>
+	 */
+	@PostMapping("/api/authenticate/logout")
+	public ResponseEntity<ResultMap> logout(HttpServletRequest request, HttpServletResponse response) throws Exception{
+		
+		authService.logout(request, response);
+		
+		return new ResponseEntity<ResultMap>(HttpStatus.OK);
+	}
+	
+	/**
 	 * 사용자 회원가입 후 로그인 처리
 	 * @return ResponseEntity<ResultMap>
 	 */
-	@PostMapping("/authenticate/join")
+	@PostMapping("/api/authenticate/join")
 	public ResponseEntity<ResultMap> Join(@RequestBody @Validated(AuthValidationGroup.JoinGroup.class) AuthVO authVo, 
 			HttpServletRequest request, HttpServletResponse response) throws Exception{
 		
@@ -56,7 +68,7 @@ public class AuthController {
 	 * 사용자 닉네임 중복 체크
 	 * @return ResponseEntity<ResultMap>
 	 */
-	@PostMapping("/authenticate/checkName")
+	@PostMapping("/api/authenticate/checkName")
 	public ResponseEntity<ResultMap> checkName(@RequestBody AuthVO authVo, HttpServletRequest request) throws Exception{
 		
 		var resultMap = authService.checkName(authVo);

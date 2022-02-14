@@ -14,14 +14,14 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@WebFilter(urlPatterns = "/api/authenticate/*")
-public class AuthFilter extends OncePerRequestFilter{
+@WebFilter(urlPatterns = "**/user")
+public class UserFilter extends OncePerRequestFilter{
 	
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 		setCORS(response);
 		
-		if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+		if ("OPTIONS".equalsIgnoreCase(request.getMethod())){
             response.setStatus(HttpServletResponse.SC_OK);
         }else{
     		if(request.getHeader("X-Requested-With") == null || !request.getHeader("X-Requested-With").equals("Axios")){

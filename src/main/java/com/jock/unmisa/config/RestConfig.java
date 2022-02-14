@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -21,7 +22,8 @@ public class RestConfig {
     @Bean
     public ObjectMapper objectMapper () {
     	var mapper = new ObjectMapper();
-    	mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    	mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false); // VO 변환시 UNKNOWN 필드 무시
+    	mapper.setSerializationInclusion(Include.NON_NULL); // json 변환시 null 인 필드 무시
         return mapper;
     }
 
