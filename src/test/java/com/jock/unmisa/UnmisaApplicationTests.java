@@ -1,6 +1,9 @@
 package com.jock.unmisa;
 
+import java.time.Duration;
 import java.util.UUID;
+
+import javax.annotation.Resource;
 
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -9,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -38,9 +42,17 @@ class UnmisaApplicationTests {
     @Autowired
     private UserQueryRepository userDAO;
     
+	@Resource(name = "redisTemplate") 
+	private ValueOperations<String, String> valueOperations;
+    
+    @Test
+    public void redisTest() throws Exception{
+    	valueOperations.set("test", "1234");
+    }
+    
     @Transactional
     @Rollback(false)
-    @Test
+    //@Test
 	public void test() throws Exception{
 		User user1 = new User();
 		user1.setId("1234");

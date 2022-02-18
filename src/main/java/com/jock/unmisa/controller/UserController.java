@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jock.unmisa.config.validate.AuthValidationGroup;
 import com.jock.unmisa.service.AuthService;
+import com.jock.unmisa.service.UserService;
 import com.jock.unmisa.utils.ResultMap;
 import com.jock.unmisa.vo.AuthVO;
 
@@ -24,15 +25,20 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 public class UserController {
 	
+	private UserService userService;
+	
 	/**
-	 * 사용자 로그인 처리
+	 * 사용자 정보 조회
 	 * @return ResponseEntity<ResultMap>
 	 */
-	@PostMapping("/api/user/lnfo")
-	public ResponseEntity<ResultMap> lnfo(@RequestBody @Validated(AuthValidationGroup.loginGroup.class) AuthVO authVo, 
-			HttpServletRequest request, HttpServletResponse response) throws Exception{
+	@PostMapping("/api/user/info")
+	public ResponseEntity<ResultMap> lnfo(HttpServletRequest request, HttpServletResponse response) throws Exception{
+		if(response.getStatus() != response.SC_OK) {
+			return new ResponseEntity<ResultMap>(HttpStatus.OK);
+		}else {
+			return new ResponseEntity<ResultMap>(userService.info(request), HttpStatus.OK);
+		}
 		
-		return new ResponseEntity<ResultMap>(HttpStatus.OK);
 	}
 
 }

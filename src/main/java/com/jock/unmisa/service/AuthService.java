@@ -6,8 +6,8 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.time.Duration;
+import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
 import javax.servlet.http.Cookie;
@@ -37,7 +37,9 @@ import com.jock.unmisa.utils.StringUtil;
 import com.jock.unmisa.vo.AuthVO;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class AuthService {
@@ -159,7 +161,28 @@ public class AuthService {
 	}
 	
 	
-	
+	/**
+	 * 토큰 갱신
+	 * @return void
+	 */
+	public String updateAuthenticationToken(String uuid, HttpServletResponse response) {
+		String refresh_token = null;
+		
+		try {
+			String token = valueOperations.get(uuid);
+			Map<String,Object> info = jwtTokenUtil.getBobyFromToken(token);
+			
+			refresh_token = jwtTokenUtil.generateToken(info);
+			
+			//set cookie
+			ClientUtils.setSessionCookie(response, "authorization", refresh_token);
+			
+		}catch (Exception e) {
+			log.info("Exception : ", e);
+		}
+		
+		return refresh_token;
+	}
 	
 	
 	
@@ -185,10 +208,7 @@ public class AuthService {
 		
 		// 자동 로그인일 경우 30일 유지
 		if(auto_login_yn) {
-			// redis
 			valueOperations.set(uuid, token, Duration.ofSeconds(session_timeout * 30));
-			
-			//cookie
 			ClientUtils.setSessionCookie(response, "u_uuid", uuid, session_timeout * 30);
 			ClientUtils.setSessionCookie(response, "authorization", token);
 		}else {
