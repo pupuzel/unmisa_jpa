@@ -26,8 +26,8 @@ import lombok.Data;
 public class User {
 	
 	@Id
-	@Column(name="USER_ID")
-	private String id;
+	@Column
+	private String user_id;
 
 	@Column(length = 50)
 	private String oauth_client_id;

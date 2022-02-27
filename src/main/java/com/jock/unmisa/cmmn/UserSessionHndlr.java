@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jock.unmisa.dao.UserQueryRepository;
 import com.jock.unmisa.entity.domain.OauthType;
 import com.jock.unmisa.entity.user.User;
+import com.jock.unmisa.entity.user.UserMeta;
 import com.jock.unmisa.utils.JwtTokenUtil;
 
 import lombok.RequiredArgsConstructor;
@@ -32,9 +33,13 @@ public class UserSessionHndlr {
 		}else {
 			Map<String,Object> body = jwtTokenUtil.getBobyFromToken(token);
 			
-			request.setAttribute("id", body.get("id"));
+			request.setAttribute("user_id", body.get("user_id"));
 			request.setAttribute("oauth_type", body.get("oauth_type"));
 			request.setAttribute("user_nm", body.get("user_nm"));
+			request.setAttribute("user_profile_img", body.get("user_profile_img"));
+			
+			Map<String,String> userMeta = (Map<String, String>) body.get("user_meta");
+			request.setAttribute("last_diary_ymd", userMeta.get("last_diary_ymd"));
 			
 			return true;
 		}
@@ -43,13 +48,19 @@ public class UserSessionHndlr {
 	
 	public User getUserSession(HttpServletRequest request) throws Exception {
 	
-		if(request.getAttribute("id") == null) {
+		if(request.getAttribute("user_id") == null) {
 			throw new Exception("getUserSession null");
 		}else {
 			User user = new User();
-			user.setId(String.valueOf(request.getAttribute("id")));
+			user.setUser_id(String.valueOf(request.getAttribute("user_id")));
 			user.setOauth_type(OauthType.valueOf( String.valueOf(request.getAttribute("oauth_type")) ));
 			user.setUser_nm(String.valueOf(request.getAttribute("user_nm")));
+			user.setUser_profile_img(String.valueOf(request.getAttribute("user_profile_img")));
+			
+			UserMeta meta = new UserMeta();
+			meta.setLast_diary_ymd(String.valueOf(request.getAttribute("last_diary_ymd")));
+			
+			user.setUser_meta(meta);
 			
 			return user;
 		}

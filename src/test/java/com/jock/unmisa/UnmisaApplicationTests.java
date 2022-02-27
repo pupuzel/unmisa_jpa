@@ -55,7 +55,7 @@ class UnmisaApplicationTests {
     //@Test
 	public void test() throws Exception{
 		User user1 = new User();
-		user1.setId("1234");
+		user1.setUser_id("1234");
 		user1.setUser_nm("크린이_클라스");
 		user1.setUser_email("jjdo1994");
 		user1.setEmail_yn(false);
@@ -63,7 +63,7 @@ class UnmisaApplicationTests {
 		user1.setOauth_type(OauthType.kakao);
 		
 		User user2 = new User();
-		user2.setId("12345");
+		user2.setUser_id("12345");
 		user2.setUser_nm("크린이_클라스2");
 		user2.setUser_email("jjdo1994");
 		user2.setEmail_yn(false);
@@ -71,7 +71,7 @@ class UnmisaApplicationTests {
 		user2.setOauth_type(OauthType.google);
 		
 		UserMeta m1 = new UserMeta();
-		m1.setId("1234");
+		m1.setUser_id("1234");
 		
 		userDAO.insert(m1);
 		
@@ -87,14 +87,14 @@ class UnmisaApplicationTests {
     	User user = userDAO.selectUser("1234", null);
     	
     	if(user != null) {
-        	System.out.println("id : "+user.getId());
+        	System.out.println("id : "+user.getUser_id());
         	System.out.println("email : "+user.getUser_email());
         	System.out.println("name : "+user.getUser_nm());
     	}
     	
     	UserMeta m = user.getUser_meta();
     	if(m != null) {
-    		System.out.println("id : "+m.getId());
+    		System.out.println("id : "+m.getUser_id());
     	}
     }
 	

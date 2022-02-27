@@ -22,8 +22,8 @@ import lombok.Data;
 public class UserMeta {
 
 	@Id
-	@Column(name="USER_ID")
-	private String id;
+	@Column
+	private String user_id;
 	
 	@Column(length = 50)
 	private String register_ip;

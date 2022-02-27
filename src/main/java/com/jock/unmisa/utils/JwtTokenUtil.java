@@ -33,7 +33,7 @@ public class JwtTokenUtil {
     //토큰이 유효성검사
     public Boolean isValidateToken(String token) {
     	try {
-	        final String userId = (String) getBobyFromToken(token).get("id");
+	        final String userId = (String) getBobyFromToken(token).get("user_id");
 	        return !userId.isEmpty();
     	}catch (Exception e) {
 			return false;

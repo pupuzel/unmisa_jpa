@@ -14,9 +14,14 @@ public class FileUtils {
 		
 		// image/jpeg, image/png
 		String fileType = vo.getUser_profile_img_type().equals("image/png") ? ".png" : ".jpg";
-		String fileName = vo.getUser_id().replaceAll("-", "");
+		String fileName = vo.getUser_id();
 		
 		File file = new File(path+fileName+fileType);
+		
+		if(file.exists()) {
+			file.delete();
+		}
+		
 		if (file.createNewFile()) {
 		    FileOutputStream fos = new FileOutputStream(file);
 		    fos.write(decodedByte);
@@ -26,7 +31,7 @@ public class FileUtils {
 		}
 		
 		
-		return file.getPath();
+		return "/profile/"+fileName+fileType;
 	}
 	
 	public static String uploadBase64ime(String path, String name) throws Exception {

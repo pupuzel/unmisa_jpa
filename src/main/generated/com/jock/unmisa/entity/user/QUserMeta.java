@@ -22,8 +22,6 @@ public class QUserMeta extends EntityPathBase<UserMeta> {
 
     public static final QUserMeta userMeta = new QUserMeta("userMeta");
 
-    public final StringPath id = createString("id");
-
     public final StringPath last_diary_ymd = createString("last_diary_ymd");
 
     public final DateTimePath<java.time.LocalDateTime> last_login_date = createDateTime("last_login_date", java.time.LocalDateTime.class);
@@ -35,6 +33,8 @@ public class QUserMeta extends EntityPathBase<UserMeta> {
     public final StringPath register_ip = createString("register_ip");
 
     public final QUser user;
+
+    public final StringPath user_id = createString("user_id");
 
     public final EnumPath<com.jock.unmisa.entity.domain.UserState> user_state = createEnum("user_state", com.jock.unmisa.entity.domain.UserState.class);
 

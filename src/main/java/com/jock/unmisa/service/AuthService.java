@@ -195,10 +195,11 @@ public class AuthService {
 	 */
 	private User setSession(User user, HttpServletResponse response, boolean auto_login_yn) throws Exception{
 		User u = new User();
-		u.setId(user.getId());
+		u.setUser_id(user.getUser_id());
 		u.setOauth_type(user.getOauth_type());
 		u.setUser_nm(user.getUser_nm());
 		u.setUser_profile_img(user.getUser_profile_img());
+		u.setUser_meta(user.getUser_meta());
 		
 		//jwt token »ý¼º
 		String token = jwtTokenUtil.<User>generateToken(u);
@@ -243,7 +244,7 @@ public class AuthService {
 		user.setOauth_type(oauthType);
 		
 		// userId set
-		user.setId(oauth_num+"-"+authVo.getClient_id());
+		user.setUser_id(oauth_num+authVo.getClient_id());
 		
 		// gender set
 		if(!StringUtil.isEmpty(authVo.getUser_gender())) {
@@ -262,7 +263,7 @@ public class AuthService {
 		
 		// profile image set
 		if(!StringUtil.isEmpty(authVo.getUser_profile_img())) {
-			authVo.setUser_id(oauth_num+"-"+authVo.getClient_id());
+			authVo.setUser_id(user.getUser_id());
 			
 			String imgPath = FileUtils.uploadProfileImg(authVo, profileImgPath);
 			user.setUser_profile_img(imgPath);
@@ -284,7 +285,7 @@ public class AuthService {
 		
 		UserMeta meta = new UserMeta();
 		meta.setUser(user);
-		meta.setId(user.getId());
+		meta.setUser_id(user.getUser_id());
 		meta.setRegister_ip(request_ip);
 		meta.setLast_login_ip(request_ip);
 		meta.setRegister_date(DateUtils.now());
@@ -341,7 +342,7 @@ public class AuthService {
 		// user_id format
 		OauthType type = OauthType.valueOf(provider.getAuth_type());
 		String oauth_num = String.format("%04d", type.ordinal());
-		authUser.setUser_id(oauth_num+"-"+authUser.getClient_id());
+		authUser.setUser_id(oauth_num+authUser.getClient_id());
 		
 		return authUser;
 	}
