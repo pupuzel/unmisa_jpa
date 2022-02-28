@@ -68,7 +68,7 @@ public class User {
 	@Column(length = 100)
 	private String user_area;
 	
-	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    @PrimaryKeyJoinColumn
+	@OneToOne
+    @JoinColumn(name = "user_meta_id")
 	private UserMeta user_meta;
 }

@@ -105,10 +105,7 @@ public class AuthService {
 		var resultMap = new ResultMap();
 		
 		// User insert
-		User user = insertUser(authVo);
-		
-		// User Meta insert
-		insertUserMeta(user, request);
+		User user = insertUser(authVo, request);
 		
 		// set session
 		User info = setSession(user, response, authVo.isAuto_login_yn());
@@ -199,7 +196,9 @@ public class AuthService {
 		u.setOauth_type(user.getOauth_type());
 		u.setUser_nm(user.getUser_nm());
 		u.setUser_profile_img(user.getUser_profile_img());
-		u.setUser_meta(user.getUser_meta());
+		
+		u.setUser_meta(new UserMeta());
+		u.getUser_meta().setLast_diary_ymd(user.getUser_meta().getLast_diary_ymd());
 		
 		//jwt token 생성
 		String token = jwtTokenUtil.<User>generateToken(u);
@@ -226,7 +225,18 @@ public class AuthService {
 	 * 사용자 create
 	 * @return User
 	 */
-	private User insertUser(AuthVO authVo) throws Exception{
+	private User insertUser(AuthVO authVo, HttpServletRequest request) throws Exception{
+		
+		String request_ip = ClientUtils.getRemoteIP(request);
+		
+		UserMeta meta = new UserMeta();
+		meta.setRegister_ip(request_ip);
+		meta.setLast_login_ip(request_ip);
+		meta.setRegister_date(DateUtils.now());
+		meta.setLast_login_date(DateUtils.now());
+		meta.setUser_state(UserState.Ordinary);
+		
+		userDAO.insert(meta);
 		
 		User user = new User();
 		user.setOauth_client_id(authVo.getClient_id());
@@ -237,6 +247,7 @@ public class AuthService {
 		user.setUser_area(authVo.getUser_area());
 		user.setUser_sns(authVo.getUser_sns());
 		user.setUser_site(authVo.getUser_site());
+		user.setUser_meta(meta);
 		
 		// oauth set
 		OauthType oauthType = OauthType.valueOf(authVo.getAuth_type());
@@ -275,25 +286,6 @@ public class AuthService {
 		return user;
 	}
 	
-	
-	/**
-	 * 사용자 Meta 정보 create
-	 * @return void
-	 */
-	private void insertUserMeta(User user, HttpServletRequest request) throws Exception{
-		String request_ip = ClientUtils.getRemoteIP(request);
-		
-		UserMeta meta = new UserMeta();
-		meta.setUser(user);
-		meta.setUser_id(user.getUser_id());
-		meta.setRegister_ip(request_ip);
-		meta.setLast_login_ip(request_ip);
-		meta.setRegister_date(DateUtils.now());
-		meta.setLast_login_date(DateUtils.now());
-		meta.setUser_state(UserState.Ordinary);
-		
-		userDAO.insert(meta);
-	}
 	
 	/**
 	 * auth 사용자 정보 조회

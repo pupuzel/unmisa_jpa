@@ -1,27 +1,17 @@
 package com.jock.unmisa.dao;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import static com.jock.unmisa.entity.user.QUser.user;
+import static com.jock.unmisa.entity.user.QUserMeta.userMeta;
 
 import org.springframework.stereotype.Repository;
 
 import com.jock.unmisa.config.QuerydslRepositoryCustom;
-import com.jock.unmisa.entity.user.QUser;
 import com.jock.unmisa.entity.user.User;
 import com.jock.unmisa.entity.user.UserMeta;
-import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
-import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import static com.jock.unmisa.entity.user.QUser.user;
-import static com.jock.unmisa.entity.user.QUserMeta.userMeta;
 
 @Slf4j
 @Repository

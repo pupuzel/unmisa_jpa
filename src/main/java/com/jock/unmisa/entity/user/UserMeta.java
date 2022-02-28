@@ -6,6 +6,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.MapsId;
@@ -22,8 +23,8 @@ import lombok.Data;
 public class UserMeta {
 
 	@Id
-	@Column
-	private String user_id;
+	@GeneratedValue
+	private int user_meta_id;
 	
 	@Column(length = 50)
 	private String register_ip;
@@ -41,8 +42,6 @@ public class UserMeta {
 	@Column(length = 8)
 	private String last_diary_ymd;
 	
-	@OneToOne
-    @MapsId
-    @JoinColumn(name = "USER_ID")
+	@OneToOne(mappedBy = "user_meta")
     private User user;
 }

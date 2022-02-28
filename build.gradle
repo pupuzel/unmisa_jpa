@@ -29,6 +29,12 @@ sourceSets {
         }
     }
 }
+
+compileJava.options.encoding = 'MS949'
+tasks.withType(JavaCompile){
+	options.encoding = 'MS949'
+}
+
 /************************************/
 
 group = 'com.jock.unmisa'

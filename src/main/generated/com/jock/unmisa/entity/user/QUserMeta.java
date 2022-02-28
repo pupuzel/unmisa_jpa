@@ -34,7 +34,7 @@ public class QUserMeta extends EntityPathBase<UserMeta> {
 
     public final QUser user;
 
-    public final StringPath user_id = createString("user_id");
+    public final NumberPath<Integer> user_meta_id = createNumber("user_meta_id", Integer.class);
 
     public final EnumPath<com.jock.unmisa.entity.domain.UserState> user_state = createEnum("user_state", com.jock.unmisa.entity.domain.UserState.class);
 
