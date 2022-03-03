@@ -32,7 +32,7 @@ public class UserController {
 		if(response.getStatus() != response.SC_OK) {
 			return new ResponseEntity<ResultMap>(HttpStatus.OK);
 		}else {
-			return new ResponseEntity<ResultMap>(userService.session(request), HttpStatus.OK);
+			return new ResponseEntity<ResultMap>(userService.getSessionInfo(request), HttpStatus.OK);
 		}
 		
 	}
@@ -43,7 +43,7 @@ public class UserController {
 	 */
 	@PostMapping("/api/user/info")
 	public ResponseEntity<ResultMap> info(@RequestBody User user) throws Exception{
-		return new ResponseEntity<ResultMap>(userService.info(user), HttpStatus.OK);
+		return new ResponseEntity<ResultMap>(userService.selectUserInfo(user), HttpStatus.OK);
 	}
 
 }

@@ -197,9 +197,6 @@ public class AuthService {
 		u.setUser_nm(user.getUser_nm());
 		u.setUser_profile_img(user.getUser_profile_img());
 		
-		u.setUser_meta(new UserMeta());
-		u.getUser_meta().setLast_diary_ymd(user.getUser_meta().getLast_diary_ymd());
-		
 		//jwt token »ý¼º
 		String token = jwtTokenUtil.<User>generateToken(u);
 		

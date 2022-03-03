@@ -7,12 +7,15 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+
+import org.springframework.data.annotation.CreatedDate;
 
 import com.jock.unmisa.config.validate.AuthValidationGroup;
 import com.jock.unmisa.config.validate.DiaryValidationGroup;
@@ -27,7 +30,7 @@ import lombok.Data;
 public class Diary {
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int diary_id;
 	
     @ManyToOne
@@ -55,6 +58,8 @@ public class Diary {
 	private int diary_like_cnt;
 	
 	
+	@CreatedDate
+	@Column(updatable = false)
 	private LocalDateTime cre_date;
 	
 	

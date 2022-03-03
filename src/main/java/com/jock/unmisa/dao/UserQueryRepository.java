@@ -26,44 +26,19 @@ public class UserQueryRepository extends QuerydslRepositoryCustom{
 	 * @return User
 	 */
 	public User selectUser(String user_id, String user_nm) {
-		User u = queryFactory
-					.select(Projections.bean(
-							User.class
-							,user.user_id
-							,user.oauth_type
-							,user.user_nm
-							,user.user_profile_img
-					))
-					.from(user)
+		return queryFactory
+					.selectFrom(user)
 					.where( eq(user_id, "user_id")
 							  ,eq(user_nm, "user_nm")
 							)
 					.fetchOne();
-		
-		if(u == null) {
-			return u;
-		}
-		
-		UserMeta m = queryFactory
-						 	.select(Projections.bean(
-						 			UserMeta.class
-						 			,userMeta.last_diary_ymd
-						 	))
-						 	.from(userMeta)
-							.where( eq(u.getUser_id(), "user_id")
-									)
-							.fetchOne();
-		
-		u.setUser_meta(m);
-		return u;
 	 }
-	
 	
 	/**
 	 * 사용자 정보 디테일 조회
 	 * @return User
 	 */
-	public User selectUserDetail(String user_id, String user_nm) {
+	public User selectUserInfo(String user_id, String user_nm) {
 		return queryFactory
 					.select(Projections.bean(
 							User.class
@@ -82,6 +57,6 @@ public class UserQueryRepository extends QuerydslRepositoryCustom{
 							)
 					.fetchOne();
 	 }
-		
+
 
 }

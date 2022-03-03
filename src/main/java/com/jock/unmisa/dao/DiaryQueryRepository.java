@@ -16,6 +16,7 @@ public class DiaryQueryRepository extends QuerydslRepositoryCustom{
     DiaryQueryRepository(JPAQueryFactory queryFactory){
     	super(diary, queryFactory);
     }
-	 
+	
+    
 
 }

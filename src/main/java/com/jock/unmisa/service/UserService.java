@@ -27,7 +27,7 @@ public class UserService {
 	 * 사용자 세션 조회
 	 * @return ResultMap
 	 */
-	public ResultMap session(HttpServletRequest request) throws Exception {
+	public ResultMap getSessionInfo(HttpServletRequest request) throws Exception {
 		var resultMap = new ResultMap();
 		
 		User user = userSessionHndlr.getUserSession(request);
@@ -41,11 +41,11 @@ public class UserService {
 	 * 사용자 정보 조회
 	 * @return ResultMap
 	 */
-	public ResultMap info(User vo) throws Exception {
+	public ResultMap selectUserInfo(User vo) throws Exception {
 		var resultMap = new ResultMap();
 		var userNm = URLDecoder.decode(vo.getUser_nm(), "UTF-8");
 		
-		User user = userDAO.selectUserDetail(null, userNm);
+		User user = userDAO.selectUserInfo(null, userNm);
 		if(user == null) {
 			resultMap.put("result", "N");
 		}else {
