@@ -41,8 +41,8 @@ public class UserController {
 	 * 사용자 정보 조회
 	 * @return ResponseEntity<ResultMap>
 	 */
-	@PostMapping("/api/user/info")
-	public ResponseEntity<ResultMap> info(@RequestBody User user) throws Exception{
+	@PostMapping("/api/user/selectUserInfo")
+	public ResponseEntity<ResultMap> selectUserInfo(@RequestBody User user) throws Exception{
 		return new ResponseEntity<ResultMap>(userService.selectUserInfo(user), HttpStatus.OK);
 	}
 

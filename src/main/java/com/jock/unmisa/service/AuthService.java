@@ -86,8 +86,11 @@ public class AuthService {
 			
 			resultMap.put("data", authUser);
 			
-		// 技记 积己	
+		// 肺弊牢
 		}else {
+			String request_ip = ClientUtils.getRemoteIP(request);
+			user.getUser_meta().setLast_login_ip(request_ip);
+			
 			User info = setSession(user, response, authVo.isAuto_login_yn());
 			
 			resultMap.put("data", info);
@@ -229,8 +232,6 @@ public class AuthService {
 		UserMeta meta = new UserMeta();
 		meta.setRegister_ip(request_ip);
 		meta.setLast_login_ip(request_ip);
-		meta.setRegister_date(DateUtils.now());
-		meta.setLast_login_date(DateUtils.now());
 		meta.setUser_state(UserState.Ordinary);
 		
 		userDAO.insert(meta);

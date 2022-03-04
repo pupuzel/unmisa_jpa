@@ -1,5 +1,7 @@
 package com.jock.unmisa.service;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Service;
@@ -9,7 +11,6 @@ import com.jock.unmisa.dao.DiaryQueryRepository;
 import com.jock.unmisa.dao.UserQueryRepository;
 import com.jock.unmisa.entity.diary.Diary;
 import com.jock.unmisa.entity.user.User;
-import com.jock.unmisa.entity.user.UserMeta;
 import com.jock.unmisa.utils.DateUtils;
 import com.jock.unmisa.utils.ResultMap;
 import com.jock.unmisa.utils.StringUtil;
@@ -64,5 +65,14 @@ public class DiaryService {
 		}
 		
 	}
+	
+	
+	public ResultMap selectDiaryList(Diary diary) throws Exception {
+		
+		List<Diary> list = diaryDAO.selectDiary(diary.getUser().getUser_id(), diary.getDiary_id());
+		
+		return new ResultMap("Y");
+	}
+	
 	
 }

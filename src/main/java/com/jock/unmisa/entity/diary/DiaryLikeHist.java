@@ -10,6 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.jock.unmisa.entity.common.CommonDateEntity;
 import com.jock.unmisa.entity.user.User;
 
 import lombok.Data;
@@ -17,7 +18,7 @@ import lombok.Data;
 @Entity
 @Table(name = "T_DIARY_LIKE_HIST")
 @Data
-public class DiaryLikeHist {
+public class DiaryLikeHist extends CommonDateEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,7 +34,4 @@ public class DiaryLikeHist {
 	
 	private boolean like_yn;
 	
-	private LocalDateTime cre_date;
-	
-	private LocalDateTime upd_date;
 }

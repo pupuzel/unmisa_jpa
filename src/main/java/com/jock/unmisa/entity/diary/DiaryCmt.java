@@ -10,6 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.jock.unmisa.entity.common.CommonDateEntity;
 import com.jock.unmisa.entity.user.User;
 
 import lombok.Data;
@@ -17,7 +18,7 @@ import lombok.Data;
 @Entity
 @Table(name = "T_DIARY_CMT")
 @Data
-public class DiaryCmt {
+public class DiaryCmt extends CommonDateEntity{
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,9 +47,5 @@ public class DiaryCmt {
 	
 	private int bundle_cmt_cnt;
 	
-	
-	private LocalDateTime cre_date;
-	
-	
-	private LocalDateTime upd_date;
+
 }

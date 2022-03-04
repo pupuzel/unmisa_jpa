@@ -19,6 +19,7 @@ import org.springframework.data.annotation.CreatedDate;
 
 import com.jock.unmisa.config.validate.AuthValidationGroup;
 import com.jock.unmisa.config.validate.DiaryValidationGroup;
+import com.jock.unmisa.entity.common.CommonDateEntity;
 import com.jock.unmisa.entity.domain.DiaryDay;
 import com.jock.unmisa.entity.user.User;
 
@@ -27,7 +28,7 @@ import lombok.Data;
 @Entity
 @Table(name = "T_DIARY")
 @Data
-public class Diary {
+public class Diary extends CommonDateEntity{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -58,10 +59,4 @@ public class Diary {
 	private int diary_like_cnt;
 	
 	
-	@CreatedDate
-	@Column(updatable = false)
-	private LocalDateTime cre_date;
-	
-	
-	private LocalDateTime upd_date;
 }
