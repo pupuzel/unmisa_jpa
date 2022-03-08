@@ -22,7 +22,10 @@ public class QDiary extends EntityPathBase<Diary> {
 
     public static final QDiary diary = new QDiary("diary");
 
-    public final DateTimePath<java.time.LocalDateTime> cre_date = createDateTime("cre_date", java.time.LocalDateTime.class);
+    public final com.jock.unmisa.entity.common.QCommonDateEntity _super = new com.jock.unmisa.entity.common.QCommonDateEntity(this);
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> cre_date = _super.cre_date;
 
     public final NumberPath<Integer> diary_cmt_cnt = createNumber("diary_cmt_cnt", Integer.class);
 
@@ -38,7 +41,8 @@ public class QDiary extends EntityPathBase<Diary> {
 
     public final StringPath diary_ymd = createString("diary_ymd");
 
-    public final DateTimePath<java.time.LocalDateTime> upd_date = createDateTime("upd_date", java.time.LocalDateTime.class);
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> upd_date = _super.upd_date;
 
     public final com.jock.unmisa.entity.user.QUser user;
 

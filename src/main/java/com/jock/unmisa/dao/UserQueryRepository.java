@@ -5,7 +5,7 @@ import static com.jock.unmisa.entity.user.QUserMeta.userMeta;
 
 import org.springframework.stereotype.Repository;
 
-import com.jock.unmisa.config.QuerydslRepositoryCustom;
+import com.jock.unmisa.cmmn.QuerydslRepositoryCustom;
 import com.jock.unmisa.entity.user.User;
 import com.jock.unmisa.entity.user.UserMeta;
 import com.querydsl.core.types.Projections;
@@ -28,8 +28,8 @@ public class UserQueryRepository extends QuerydslRepositoryCustom{
 	public User selectUser(String user_id, String user_nm) {
 		return queryFactory
 					.selectFrom(user)
-					.where( eq(user_id, "user_id")
-							  ,eq(user_nm, "user_nm")
+					.where( eq(user.user_id, user_id)
+							  ,eq(user.user_nm, user_nm)
 							)
 					.fetchOne();
 	 }
@@ -52,8 +52,8 @@ public class UserQueryRepository extends QuerydslRepositoryCustom{
 							,user.user_area
 					))
 					.from(user)
-					.where( eq(user_id, "user_id")
-							  ,eq(user_nm, "user_nm")
+					.where( eq(user.user_id, user_id)
+							  ,eq(user.user_nm, user_nm)
 							)
 					.fetchOne();
 	 }

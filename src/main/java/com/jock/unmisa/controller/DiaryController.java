@@ -60,14 +60,14 @@ public class DiaryController {
 	}
 	
 	/**
-	 * 
+	 * 사용자 운동 일기 조회
 	 * @return ResponseEntity<ResultMap>
 	 */
 	@PostMapping("/api/diary/selectDiaryList")
 	public ResponseEntity<ResultMap> selectDiary(@RequestBody Diary diary, 
 			HttpServletRequest request, HttpServletResponse response) throws Exception{
 			
-		return new ResponseEntity<ResultMap>(diaryService.selectDiaryList(diary), HttpStatus.OK);
+		return new ResponseEntity<ResultMap>(diaryService.selectDiaryList(request, diary), HttpStatus.OK);
 			
 	}
 }

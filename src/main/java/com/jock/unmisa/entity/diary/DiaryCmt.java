@@ -22,7 +22,7 @@ public class DiaryCmt extends CommonDateEntity{
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int cmt_id;
+	private Integer cmt_id;
 	
 	@ManyToOne
 	@JoinColumn(name = "DIARY_ID")

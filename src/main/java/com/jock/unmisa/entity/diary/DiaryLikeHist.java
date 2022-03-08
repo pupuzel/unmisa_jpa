@@ -22,7 +22,7 @@ public class DiaryLikeHist extends CommonDateEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int like_id;
+	private Integer like_id;
 
 	@ManyToOne
 	@JoinColumn(name = "DIARY_ID")

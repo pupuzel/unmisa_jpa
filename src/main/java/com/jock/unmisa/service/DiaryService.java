@@ -67,11 +67,26 @@ public class DiaryService {
 	}
 	
 	
-	public ResultMap selectDiaryList(Diary diary) throws Exception {
+	public ResultMap selectDiaryList(HttpServletRequest request, Diary diary) throws Exception {
+		User session = userSessionHndlr.getUserSession(request);
+		List<Diary> list = null;
 		
-		List<Diary> list = diaryDAO.selectDiary(diary.getUser().getUser_id(), diary.getDiary_id());
+		if(session != null) {
+			list = diaryDAO.selectDiaryList( diary.getUser().getUser_id()
+											  , diary.getDiary_id()
+											  , session.getUser_id());
+		}else {
+			list = diaryDAO.selectDiaryList( diary.getUser().getUser_id()
+											  , diary.getDiary_id()
+											  , null);
+		}
 		
-		return new ResultMap("Y");
+		if(list.size() == 0) {
+			return new ResultMap("N");
+		}else {
+			return new ResultMap("Y", list);
+		}
+		
 	}
 	
 	

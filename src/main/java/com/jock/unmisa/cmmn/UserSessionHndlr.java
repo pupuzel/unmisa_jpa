@@ -46,7 +46,7 @@ public class UserSessionHndlr {
 	public User getUserSession(HttpServletRequest request) throws Exception {
 	
 		if(request.getAttribute("user_id") == null) {
-			throw new Exception("getUserSession null");
+			return null;
 		}else {
 			User user = new User();
 			user.setUser_id(String.valueOf(request.getAttribute("user_id")));

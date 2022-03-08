@@ -1,7 +1,6 @@
 package com.jock.unmisa.config;
 
 import java.net.http.HttpClient;
-import java.net.http.HttpClient.Redirect;
 import java.time.Duration;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.SynchronousQueue;
@@ -15,6 +14,7 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 @Configuration
 public class RestConfig {
@@ -24,6 +24,7 @@ public class RestConfig {
     	var mapper = new ObjectMapper();
     	mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false); // VO 변환시 UNKNOWN 필드 무시
     	mapper.setSerializationInclusion(Include.NON_NULL); // json 변환시 null 인 필드 무시
+    	mapper.registerModule(new JavaTimeModule()); // LocalDateTime 이슈
         return mapper;
     }
 

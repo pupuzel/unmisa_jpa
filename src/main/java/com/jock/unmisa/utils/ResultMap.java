@@ -22,6 +22,11 @@ public class ResultMap extends HashMap<String, Object>{
 		super.put("message", message);
 	}
 	
+	public ResultMap(String result, Object data) {
+		super.put("result", result);
+		super.put("data", data);
+	}
+	
 	public String getString(String name) {
 		return String.valueOf(get(name));
 	}

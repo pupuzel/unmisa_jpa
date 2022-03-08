@@ -22,15 +22,19 @@ public class QUserMeta extends EntityPathBase<UserMeta> {
 
     public static final QUserMeta userMeta = new QUserMeta("userMeta");
 
-    public final StringPath last_diary_ymd = createString("last_diary_ymd");
+    public final com.jock.unmisa.entity.common.QCommonDateEntity _super = new com.jock.unmisa.entity.common.QCommonDateEntity(this);
 
-    public final DateTimePath<java.time.LocalDateTime> last_login_date = createDateTime("last_login_date", java.time.LocalDateTime.class);
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> cre_date = _super.cre_date;
+
+    public final StringPath last_diary_ymd = createString("last_diary_ymd");
 
     public final StringPath last_login_ip = createString("last_login_ip");
 
-    public final DateTimePath<java.time.LocalDateTime> register_date = createDateTime("register_date", java.time.LocalDateTime.class);
-
     public final StringPath register_ip = createString("register_ip");
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> upd_date = _super.upd_date;
 
     public final QUser user;
 

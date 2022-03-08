@@ -22,7 +22,10 @@ public class QDiaryLikeHist extends EntityPathBase<DiaryLikeHist> {
 
     public static final QDiaryLikeHist diaryLikeHist = new QDiaryLikeHist("diaryLikeHist");
 
-    public final DateTimePath<java.time.LocalDateTime> cre_date = createDateTime("cre_date", java.time.LocalDateTime.class);
+    public final com.jock.unmisa.entity.common.QCommonDateEntity _super = new com.jock.unmisa.entity.common.QCommonDateEntity(this);
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> cre_date = _super.cre_date;
 
     public final QDiary diary;
 
@@ -30,7 +33,8 @@ public class QDiaryLikeHist extends EntityPathBase<DiaryLikeHist> {
 
     public final BooleanPath like_yn = createBoolean("like_yn");
 
-    public final DateTimePath<java.time.LocalDateTime> upd_date = createDateTime("upd_date", java.time.LocalDateTime.class);
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> upd_date = _super.upd_date;
 
     public final com.jock.unmisa.entity.user.QUser user;
 
