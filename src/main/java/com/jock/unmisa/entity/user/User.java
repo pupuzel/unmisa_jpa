@@ -1,5 +1,6 @@
 package com.jock.unmisa.entity.user;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;

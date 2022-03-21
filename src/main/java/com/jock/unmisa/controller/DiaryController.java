@@ -32,13 +32,13 @@ public class DiaryController {
 	 * @return ResponseEntity<ResultMap>
 	 */
 	@PostMapping("/api/diary/create")
-	public ResponseEntity<ResultMap> create(@RequestBody @Validated(DiaryValidationGroup.createGroup.class) Diary diary, 
+	public ResponseEntity<ResultMap> create(@RequestBody @Validated(DiaryValidationGroup.createGroup.class) Diary diaryVo, 
 			HttpServletRequest request, HttpServletResponse response) throws Exception{
 			
 			if(response.getStatus() == response.SC_UNAUTHORIZED) {
 				return new ResponseEntity<ResultMap>(HttpStatus.UNAUTHORIZED);
 			}else {
-				return new ResponseEntity<ResultMap>(diaryService.createDiary(diary, request), HttpStatus.OK);
+				return new ResponseEntity<ResultMap>(diaryService.createDiary(diaryVo, request), HttpStatus.OK);
 			}
 			
 	}
@@ -48,14 +48,26 @@ public class DiaryController {
 	 * @return ResponseEntity<ResultMap>
 	 */
 	@PostMapping("/api/diary/checkAvailable")
-	public ResponseEntity<ResultMap> checkAvailable(@RequestBody Diary diary, 
+	public ResponseEntity<ResultMap> checkAvailable(@RequestBody Diary diaryVo, 
 			HttpServletRequest request, HttpServletResponse response) throws Exception{
 			
 			if(response.getStatus() == response.SC_UNAUTHORIZED) {
 				return new ResponseEntity<ResultMap>(HttpStatus.UNAUTHORIZED);
 			}else {
-				return new ResponseEntity<ResultMap>(diaryService.checkAvailable(diary, request), HttpStatus.OK);
+				return new ResponseEntity<ResultMap>(diaryService.checkAvailable(diaryVo, request), HttpStatus.OK);
 			}
+			
+	}
+	
+	/**
+	 * 사용자 운동 일기 리스트 조회
+	 * @return ResponseEntity<ResultMap>
+	 */
+	@PostMapping("/api/diary/selectDiaryList")
+	public ResponseEntity<ResultMap> selectDiaryList(@RequestBody Diary diaryVo, 
+			HttpServletRequest request, HttpServletResponse response) throws Exception{
+			
+		return new ResponseEntity<ResultMap>(diaryService.selectDiaryList(request, diaryVo), HttpStatus.OK);
 			
 	}
 	
@@ -63,11 +75,27 @@ public class DiaryController {
 	 * 사용자 운동 일기 조회
 	 * @return ResponseEntity<ResultMap>
 	 */
-	@PostMapping("/api/diary/selectDiaryList")
-	public ResponseEntity<ResultMap> selectDiary(@RequestBody Diary diary, 
+	@PostMapping("/api/diary/selectDiary")
+	public ResponseEntity<ResultMap> selectDiary(@RequestBody Diary diaryVo, 
 			HttpServletRequest request, HttpServletResponse response) throws Exception{
 			
-		return new ResponseEntity<ResultMap>(diaryService.selectDiaryList(request, diary), HttpStatus.OK);
+		return new ResponseEntity<ResultMap>(diaryService.selectDiary(request, diaryVo), HttpStatus.OK);
+			
+	}
+	
+	/**
+	 * 운동 일기 좋아요
+	 * @return ResponseEntity<ResultMap>
+	 */
+	@PostMapping("/api/diary/saveDiaryLike")
+	public ResponseEntity<ResultMap> saveDiaryLike(@RequestBody Diary diaryVo, 
+			HttpServletRequest request, HttpServletResponse response) throws Exception{
+		
+			if(response.getStatus() == response.SC_UNAUTHORIZED) {
+				return new ResponseEntity<ResultMap>(HttpStatus.UNAUTHORIZED);
+			}else {
+				return new ResponseEntity<ResultMap>(diaryService.saveDiaryLike(request, diaryVo), HttpStatus.OK);
+			}
 			
 	}
 }

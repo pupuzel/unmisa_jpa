@@ -3,6 +3,7 @@ package com.jock.unmisa.entity.diary;
 import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -24,11 +25,11 @@ public class DiaryLikeHist extends CommonDateEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer like_id;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "DIARY_ID")
 	private Diary diary;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "USER_ID")
 	private User user;
 	

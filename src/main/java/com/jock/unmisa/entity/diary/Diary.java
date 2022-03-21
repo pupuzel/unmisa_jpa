@@ -58,8 +58,15 @@ public class Diary extends CommonDateEntity{
 	
 	private int diary_like_cnt;
 	
+	/* ************************ DTO ************************ */
 	@Transient
 	private boolean like_yn;
+	
+	@Transient
+	private String user_nm;
+	
+	@Transient
+	private String user_profile_img;
 	
 	
 }

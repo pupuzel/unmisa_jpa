@@ -1,5 +1,6 @@
 package com.jock.unmisa.dao;
 
+import static com.jock.unmisa.entity.user.QUser.user;
 import static com.jock.unmisa.entity.diary.QDiary.diary;
 import static com.jock.unmisa.entity.diary.QDiaryLikeHist.diaryLikeHist;
 
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import com.jock.unmisa.cmmn.QuerydslRepositoryCustom;
 import com.jock.unmisa.entity.diary.Diary;
+import com.jock.unmisa.entity.diary.DiaryLikeHist;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -27,16 +29,7 @@ public class DiaryQueryRepository extends QuerydslRepositoryCustom{
     public List<Diary> selectDiaryList(String user_id, Integer diary_id, String search_user_id){
     	if(search_user_id == null) {
     		return queryFactory
-    				.select(Projections.bean(
-    						Diary.class
-    						,diary.diary_id
-    						,diary.diary_content
-    						,diary.diary_ymd
-    						,diary.diary_day
-    						,diary.diary_place
-    						,diary.diary_cmt_cnt
-    						,diary.diary_like_cnt
-    				))
+    				.selectFrom(diary)
     				.where( eq(diary.user.user_id, user_id)
     						 ,lt(diary.diary_id, diary_id)
     						)
@@ -55,6 +48,7 @@ public class DiaryQueryRepository extends QuerydslRepositoryCustom{
     						,diary.diary_cmt_cnt
     						,diary.diary_like_cnt
     						,diaryLikeHist.like_yn
+    						,diary.user.user_id
     				))
     				.from(diary)
     				.where( eq(diary.user.user_id, user_id)
@@ -68,6 +62,58 @@ public class DiaryQueryRepository extends QuerydslRepositoryCustom{
     				.fetch();
     	}
 
+    }
+    
+    
+    public Diary selectDiary(Integer diary_id, String search_user_id) {
+    	
+    	if(search_user_id == null) {
+        	return queryFactory
+    				.selectFrom(diary)
+    				.where( eq(diary.diary_id, diary_id) )
+    				.fetchOne();
+    	}else {
+    		return queryFactory
+    				.select(Projections.bean(
+    						Diary.class
+    						,diary.diary_id
+    						,diary.diary_content
+    						,diary.diary_ymd
+    						,diary.diary_day
+    						,diary.diary_place
+    						,diary.diary_cmt_cnt
+    						,diary.diary_like_cnt
+    						,diaryLikeHist.like_yn
+    						,diary.user.user_nm
+    						,diary.user.user_profile_img
+    				))
+    				.from(diary)
+    				.innerJoin(diary.user, user)
+    				.leftJoin(diaryLikeHist)
+    					 .on( diary.diary_id.eq(diaryLikeHist.diary.diary_id) 
+    						   ,eq(diaryLikeHist.user.user_id, search_user_id))
+					.where( eq(diary.diary_id, diary_id)	) 
+    				.fetchOne();
+    	}
+    	
+    }
+    
+    public DiaryLikeHist selectDiaryLikeHist(Integer diary_id, String user_id) {
+    	return queryFactory
+    				.selectFrom(diaryLikeHist)
+    				.where( eq(diaryLikeHist.diary.diary_id, diary_id)
+    						 ,eq(diaryLikeHist.user.user_id, user_id))
+    				.fetchOne();
+    }
+    
+    
+    public void updateDiaryLikeCnt(Integer diary_id, boolean like_yn) {
+    	queryFactory
+    		.update(diary)
+    		.set(diary.diary_like_cnt, diary.diary_like_cnt.add(like_yn ? 1 : -1))
+    		.where( eq(diary.diary_id, diary_id))
+    		.execute();
+    		
     }
     
 }
