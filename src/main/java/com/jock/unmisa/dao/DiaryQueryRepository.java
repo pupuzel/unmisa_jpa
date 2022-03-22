@@ -116,4 +116,12 @@ public class DiaryQueryRepository extends QuerydslRepositoryCustom{
     		
     }
     
+    public void updateDiaryCmtCnt(Integer diary_id, int cnt) {
+    	queryFactory
+    		.update(diary)
+    		.set(diary.diary_cmt_cnt, diary.diary_cmt_cnt.add(cnt))
+    		.where( eq(diary.diary_id, diary_id))
+    		.execute();
+    		
+    }
 }

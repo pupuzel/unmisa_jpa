@@ -10,6 +10,7 @@ import com.jock.unmisa.cmmn.UserSessionHndlr;
 import com.jock.unmisa.dao.DiaryQueryRepository;
 import com.jock.unmisa.dao.UserQueryRepository;
 import com.jock.unmisa.entity.diary.Diary;
+import com.jock.unmisa.entity.diary.DiaryCmt;
 import com.jock.unmisa.entity.diary.DiaryLikeHist;
 import com.jock.unmisa.entity.user.User;
 import com.jock.unmisa.utils.DateUtils;
@@ -144,5 +145,23 @@ public class DiaryService {
 		return new ResultMap("Y");
 	}
 	
+	
+	public ResultMap createComment(DiaryCmt diaryCmtVo, HttpServletRequest request) throws Exception {
+		User session = userSessionHndlr.getUserSession(request);
+		
+		// 사용자 조회
+		User user = userDAO.selectUser(session.getUser_id(), null);
+		
+		// 댓글 작성
+		diaryCmtVo.setUser(user);
+		diaryDAO.insert(diaryCmtVo);
+		diaryCmtVo.setBundle_cmt_id(diaryCmtVo.getCmt_id());
+		
+		// 댓글 cnt save
+		diaryDAO.updateDiaryCmtCnt(diaryCmtVo.getDiary().getDiary_id(), 1);
+		
+		return new ResultMap();
+		
+	}
 	
 }

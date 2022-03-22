@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jock.unmisa.config.validate.DiaryValidationGroup;
 import com.jock.unmisa.entity.diary.Diary;
+import com.jock.unmisa.entity.diary.DiaryCmt;
 import com.jock.unmisa.service.DiaryService;
 import com.jock.unmisa.utils.ResultMap;
 
@@ -98,4 +99,24 @@ public class DiaryController {
 			}
 			
 	}
+	
+	
+	/**
+	 *  운동 일기 댓글 작성
+	 * @return ResponseEntity<ResultMap>
+	 */
+	@PostMapping("/api/diary/comment/create")
+	public ResponseEntity<ResultMap> createComment(@RequestBody @Validated(DiaryValidationGroup.createCommentGroup.class) DiaryCmt diaryCmtVo, 
+			HttpServletRequest request, HttpServletResponse response) throws Exception{
+			
+			if(response.getStatus() == response.SC_UNAUTHORIZED) {
+				return new ResponseEntity<ResultMap>(HttpStatus.UNAUTHORIZED);
+			}else {
+				return new ResponseEntity<ResultMap>(diaryService.createComment(diaryCmtVo, request), HttpStatus.OK);
+			}
+			
+	}
+	
+	
+	
 }

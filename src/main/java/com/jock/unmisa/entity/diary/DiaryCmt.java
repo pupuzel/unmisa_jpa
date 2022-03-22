@@ -9,7 +9,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
+import com.jock.unmisa.config.validate.DiaryValidationGroup;
 import com.jock.unmisa.entity.common.CommonDateEntity;
 import com.jock.unmisa.entity.user.User;
 
@@ -32,11 +35,11 @@ public class DiaryCmt extends CommonDateEntity{
 	@JoinColumn(name = "USER_ID")
 	private User user;
 	
-	
+	@NotEmpty(groups = DiaryValidationGroup.createCommentGroup.class, message = "댓글 내용을 입력해주세요")
 	private String cmt_content;
 	
-	
-	private int cmt_depth;
+	@NotNull(groups = DiaryValidationGroup.createCommentGroup.class, message = "null depth")
+	private Integer cmt_depth;
 	
 	
 	private int bundle_cmt_id;
