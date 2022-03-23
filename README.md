@@ -4,6 +4,6 @@
  - 서비스 오픈전까지 public 예정
 
 ## 함께 사용한 skill
-JPA + QueryDSL ( Database Layer )
-Redis ( 세션 관리 )
-Oauth2.0 ( 소셜 로그인 )
+JPA + QueryDSL ( Database Layer )   
+Redis ( 세션 관리 )   
+Oauth2.0 ( 소셜 로그인 )   
