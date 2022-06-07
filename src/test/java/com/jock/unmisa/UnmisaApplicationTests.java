@@ -18,6 +18,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.jock.unmisa.dao.DiaryQueryRepository;
 import com.jock.unmisa.dao.UserQueryRepository;
 import com.jock.unmisa.entity.domain.OauthType;
 import com.jock.unmisa.entity.user.User;
@@ -42,10 +43,13 @@ class UnmisaApplicationTests {
     @Autowired
     private UserQueryRepository userDAO;
     
+    @Autowired
+    private DiaryQueryRepository diaryDAO;
+    
 	@Resource(name = "redisTemplate") 
 	private ValueOperations<String, String> valueOperations;
     
-    @Test
+    //@Test
     public void redisTest() throws Exception{
     	valueOperations.set("test", "1234");
     }
@@ -71,7 +75,7 @@ class UnmisaApplicationTests {
 		user2.setOauth_type(OauthType.google);
 		
 		UserMeta m1 = new UserMeta();
-		m1.setUser_id("1234");
+		//m1.setUser_id("1234");
 		
 		userDAO.insert(m1);
 		
@@ -82,20 +86,10 @@ class UnmisaApplicationTests {
 	}
     
     
-    
+    @Test
     void test2() throws Exception {
-    	User user = userDAO.selectUser("1234", null);
-    	
-    	if(user != null) {
-        	System.out.println("id : "+user.getUser_id());
-        	System.out.println("email : "+user.getUser_email());
-        	System.out.println("name : "+user.getUser_nm());
-    	}
-    	
-    	UserMeta m = user.getUser_meta();
-    	if(m != null) {
-    		System.out.println("id : "+m.getUser_id());
-    	}
+    	var list = diaryDAO.selectDiaryCmtList(18);
+    	System.out.println(list.size());
     }
 	
 }

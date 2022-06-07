@@ -1,8 +1,9 @@
 package com.jock.unmisa.dao;
 
-import static com.jock.unmisa.entity.user.QUser.user;
 import static com.jock.unmisa.entity.diary.QDiary.diary;
+import static com.jock.unmisa.entity.diary.QDiaryCmt.diaryCmt;
 import static com.jock.unmisa.entity.diary.QDiaryLikeHist.diaryLikeHist;
+import static com.jock.unmisa.entity.user.QUser.user;
 
 import java.util.List;
 
@@ -10,9 +11,10 @@ import org.springframework.stereotype.Repository;
 
 import com.jock.unmisa.cmmn.QuerydslRepositoryCustom;
 import com.jock.unmisa.entity.diary.Diary;
+import com.jock.unmisa.entity.diary.DiaryCmt;
 import com.jock.unmisa.entity.diary.DiaryLikeHist;
+import com.jock.unmisa.entity.user.QUser;
 import com.querydsl.core.types.Projections;
-import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.extern.slf4j.Slf4j;
@@ -123,5 +125,30 @@ public class DiaryQueryRepository extends QuerydslRepositoryCustom{
     		.where( eq(diary.diary_id, diary_id))
     		.execute();
     		
+    }
+    
+    public List<DiaryCmt> selectDiaryCmtList(Integer diary_id){
+    	QUser likeUser = new QUser("likeUser");
+    	
+		return queryFactory
+				.select(Projections.bean(
+						DiaryCmt.class
+					   ,diaryCmt.cmt_id
+					   ,diaryCmt.bundle_cmt_id
+					   ,diaryCmt.cmt_content
+					   ,diaryCmt.cmt_depth
+					   ,diaryCmt.user.user_nm
+					   ,likeUser.user_nm.as("like_user_nm")
+					   ,diaryCmt.cre_date
+				))
+				.from(diaryCmt)
+				.where( eq(diaryCmt.diary.diary_id, diary_id)
+						)
+				.innerJoin(diaryCmt.user, user)
+				.leftJoin(likeUser)
+					 .on( diaryCmt.link_user_id.eq(likeUser.user_id))
+				.orderBy(diaryCmt.bundle_cmt_id.asc(), diaryCmt.cmt_id.asc())
+				//.limit(5)
+				.fetch();
     }
 }

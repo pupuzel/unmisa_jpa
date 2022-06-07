@@ -36,7 +36,7 @@ public class DiaryController {
 	public ResponseEntity<ResultMap> create(@RequestBody @Validated(DiaryValidationGroup.createGroup.class) Diary diaryVo, 
 			HttpServletRequest request, HttpServletResponse response) throws Exception{
 			
-			if(response.getStatus() == response.SC_UNAUTHORIZED) {
+			if(response.getStatus() == HttpServletResponse.SC_UNAUTHORIZED) {
 				return new ResponseEntity<ResultMap>(HttpStatus.UNAUTHORIZED);
 			}else {
 				return new ResponseEntity<ResultMap>(diaryService.createDiary(diaryVo, request), HttpStatus.OK);
@@ -92,7 +92,7 @@ public class DiaryController {
 	public ResponseEntity<ResultMap> saveDiaryLike(@RequestBody Diary diaryVo, 
 			HttpServletRequest request, HttpServletResponse response) throws Exception{
 		
-			if(response.getStatus() == response.SC_UNAUTHORIZED) {
+			if(response.getStatus() == HttpServletResponse.SC_UNAUTHORIZED) {
 				return new ResponseEntity<ResultMap>(HttpStatus.UNAUTHORIZED);
 			}else {
 				return new ResponseEntity<ResultMap>(diaryService.saveDiaryLike(request, diaryVo), HttpStatus.OK);
@@ -109,7 +109,7 @@ public class DiaryController {
 	public ResponseEntity<ResultMap> createComment(@RequestBody @Validated(DiaryValidationGroup.createCommentGroup.class) DiaryCmt diaryCmtVo, 
 			HttpServletRequest request, HttpServletResponse response) throws Exception{
 			
-			if(response.getStatus() == response.SC_UNAUTHORIZED) {
+			if(response.getStatus() == HttpServletResponse.SC_UNAUTHORIZED) {
 				return new ResponseEntity<ResultMap>(HttpStatus.UNAUTHORIZED);
 			}else {
 				return new ResponseEntity<ResultMap>(diaryService.createComment(diaryCmtVo, request), HttpStatus.OK);

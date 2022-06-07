@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
@@ -41,14 +42,17 @@ public class DiaryCmt extends CommonDateEntity{
 	@NotNull(groups = DiaryValidationGroup.createCommentGroup.class, message = "null depth")
 	private Integer cmt_depth;
 	
-	
 	private int bundle_cmt_id;
-	
 	
 	private String link_user_id;
 	
-	
 	private int bundle_cmt_cnt;
 	
+	/* ************************ DTO ************************ */
+	@Transient
+	private String user_nm;
+	
+	@Transient
+	private String like_user_nm;
 
 }

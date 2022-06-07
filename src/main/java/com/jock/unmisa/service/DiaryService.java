@@ -156,6 +156,7 @@ public class DiaryService {
 		diaryCmtVo.setUser(user);
 		diaryDAO.insert(diaryCmtVo);
 		diaryCmtVo.setBundle_cmt_id(diaryCmtVo.getCmt_id());
+		// diaryCmtVo.setCmt_num(0);
 		
 		// ´ñ±Û cnt save
 		diaryDAO.updateDiaryCmtCnt(diaryCmtVo.getDiary().getDiary_id(), 1);

@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 import javax.servlet.FilterChain;
+import javax.servlet.ReadListener;
 import javax.servlet.ServletException;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -13,9 +14,13 @@ import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-@Order(0)
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+//@Component
 public class CustomServletFilter extends OncePerRequestFilter{
 
 	@Override
@@ -57,6 +62,24 @@ public class CustomServletFilter extends OncePerRequestFilter{
 				@Override
 				public int read() throws IOException {
 					return byteArrayInputStream.read();
+				}
+
+				@Override
+				public boolean isFinished() {
+					// TODO Auto-generated method stub
+					return false;
+				}
+
+				@Override
+				public boolean isReady() {
+					// TODO Auto-generated method stub
+					return false;
+				}
+
+				@Override
+				public void setReadListener(ReadListener listener) {
+					// TODO Auto-generated method stub
+					
 				}
 			};
 		}
