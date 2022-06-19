@@ -165,4 +165,18 @@ public class DiaryService {
 		
 	}
 	
+	
+	public ResultMap selectDiaryCmtList(HttpServletRequest request, Diary diaryVo) throws Exception {
+		
+		List<DiaryCmt> diaryCmtList = diaryDAO.selectDiaryCmtList(diaryVo.getDiary_id());
+		
+		if(diaryCmtList == null || diaryCmtList.size() < 1) {
+			return new ResultMap("N");
+		}else {
+			return new ResultMap("Y", diaryCmtList);
+		}
+		
+			
+	}
+	
 }

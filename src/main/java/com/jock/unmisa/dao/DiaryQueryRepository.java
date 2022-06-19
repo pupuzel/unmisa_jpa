@@ -137,7 +137,9 @@ public class DiaryQueryRepository extends QuerydslRepositoryCustom{
 					   ,diaryCmt.bundle_cmt_id
 					   ,diaryCmt.cmt_content
 					   ,diaryCmt.cmt_depth
-					   ,diaryCmt.user.user_nm
+					   ,diaryCmt.user.user_id
+					   ,diaryCmt.user.user_nm	
+					   ,diaryCmt.link_user_id
 					   ,likeUser.user_nm.as("like_user_nm")
 					   ,diaryCmt.cre_date
 				))

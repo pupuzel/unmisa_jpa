@@ -119,4 +119,18 @@ public class DiaryController {
 	
 	
 	
+	/**
+	 * 운동 일기 댓글 리스트
+	 * @return ResponseEntity<ResultMap>
+	 */
+	@PostMapping("/api/diary/selectDiaryCmtList")
+	public ResponseEntity<ResultMap> selectDiaryCmtList(@RequestBody Diary diaryVo, 
+			HttpServletRequest request, HttpServletResponse response) throws Exception{
+			
+		return new ResponseEntity<ResultMap>(diaryService.selectDiaryCmtList(request, diaryVo), HttpStatus.OK);
+			
+	}
+	
+	
+	
 }

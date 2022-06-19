@@ -50,6 +50,9 @@ public class DiaryCmt extends CommonDateEntity{
 	
 	/* ************************ DTO ************************ */
 	@Transient
+	private String user_id;
+	
+	@Transient
 	private String user_nm;
 	
 	@Transient
