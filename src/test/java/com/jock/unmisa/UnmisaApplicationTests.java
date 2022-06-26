@@ -1,8 +1,5 @@
 package com.jock.unmisa;
 
-import java.time.Duration;
-import java.util.UUID;
-
 import javax.annotation.Resource;
 
 import org.junit.jupiter.api.Test;
@@ -19,6 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.jock.unmisa.dao.DiaryQueryRepository;
+import com.jock.unmisa.dao.ScheduleQueryRepository;
 import com.jock.unmisa.dao.UserQueryRepository;
 import com.jock.unmisa.entity.domain.OauthType;
 import com.jock.unmisa.entity.user.User;
@@ -45,6 +43,9 @@ class UnmisaApplicationTests {
     
     @Autowired
     private DiaryQueryRepository diaryDAO;
+    
+    @Autowired
+    private ScheduleQueryRepository scheduleDAO;
     
 	@Resource(name = "redisTemplate") 
 	private ValueOperations<String, String> valueOperations;
@@ -88,7 +89,7 @@ class UnmisaApplicationTests {
     
     @Test
     void test2() throws Exception {
-    	var list = diaryDAO.selectDiaryCmtList(18);
+    	var list = scheduleDAO.selectCategoryList();
     	System.out.println(list.size());
     }
 	
