@@ -18,10 +18,20 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class ScheduleService {
+public class CommonService {
 
-	private final UserSessionHndlr userSessionHndlr;
-	
 	private final ScheduleQueryRepository scheduleDAO;
 	
+	public ResultMap selectCategoryList(HttpServletRequest request) throws Exception {
+		
+		List<Category> resultList = scheduleDAO.selectCategoryList();
+		
+		if(resultList == null || resultList.size() < 1) {
+			return new ResultMap("N");
+		}else {
+			return new ResultMap("Y", resultList);
+		}
+		
+			
+	}
 }
