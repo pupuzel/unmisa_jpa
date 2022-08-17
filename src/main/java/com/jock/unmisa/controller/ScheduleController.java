@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jock.unmisa.config.validate.DiaryValidationGroup;
 import com.jock.unmisa.entity.diary.Diary;
 import com.jock.unmisa.entity.diary.DiaryCmt;
+import com.jock.unmisa.entity.schedule.Schedule;
 import com.jock.unmisa.service.DiaryService;
 import com.jock.unmisa.service.ScheduleService;
 import com.jock.unmisa.utils.ResultMap;
@@ -28,5 +29,17 @@ import lombok.extern.slf4j.Slf4j;
 public class ScheduleController {
 	
 	private ScheduleService scheduleService;
+	
+	@PostMapping("/api/schedule/createSchedule")
+	public ResponseEntity<ResultMap> createSchedule(@RequestBody  Schedule schedule
+			, HttpServletRequest request, HttpServletResponse response) throws Exception{
+		
+		if(response.getStatus() == HttpServletResponse.SC_UNAUTHORIZED) {
+			return new ResponseEntity<ResultMap>(HttpStatus.UNAUTHORIZED);
+		}else {
+			return new ResponseEntity<ResultMap>(scheduleService.createSchedule(schedule, request), HttpStatus.OK);
+		}
+		
+	}
 
 }

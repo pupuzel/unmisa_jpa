@@ -1,6 +1,7 @@
 package com.jock.unmisa.dao;
 
 import static com.jock.unmisa.entity.category.QCategory.category;
+import static com.jock.unmisa.entity.schedule.QSchedule.schedule;
 import static com.jock.unmisa.entity.diary.QDiary.diary;
 
 import java.util.List;
@@ -19,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ScheduleQueryRepository extends QuerydslRepositoryCustom{
     
     ScheduleQueryRepository(JPAQueryFactory queryFactory){
-    	super(category, queryFactory);
+    	super(schedule, queryFactory);
     }
     
     public List<Category> selectCategoryList(){
